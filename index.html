@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alliance High School</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="css/styles.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            padding-top: 70px;
+            /* Add padding to account for fixed navbar */
+        }
+
+        .navbar {
+            background-color: #1a237e !important;
+            /* Force blue color */
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+        }
+
+        .hero-section {
+            background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('images/students.jpeg');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            padding: 100px 0;
+            text-align: center;
+        }
+
+        .feature-card {
+            transition: transform 0.3s ease;
+            margin-bottom: 20px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .quick-links {
+            background-color: #e9ecef;
+            padding: 40px 0;
+        }
+
+        .news-section {
+            padding: 40px 0;
+            background-color: white;
+        }
+
+        .card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .footer {
+            background: #1a237e;
+            color: white;
+            padding: 40px 0;
+        }
+
+        .btn-primary {
+            background-color: #1a237e;
+            border-color: #1a237e;
+        }
+
+        .btn-primary:hover {
+            background-color: #0d47a1;
+            border-color: #0d47a1;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center" href="index.html">
+                <img src="images/bag.png" alt="St Francis Secondary School Logo" height="50" class="me-2">
+                <span>St Francis Secondary School</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="index.html">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="registration.html">Registration</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="report-card.html">Report Cards</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="attendance.html">Attendance</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="calendar.html">Calendar</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="registration-card.html">Registration Card</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="contact.html">Contact Us</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="admin-login.html">Admin Portal</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="container">
+            <h1 class="display-4 mb-4">Welcome to Alliance High School</h1>
+            <p class="lead mb-4">Excellence in Education Since 1926</p>
+            <a href="registration.html" class="btn btn-primary btn-lg">Register Now</a>
+        </div>
+    </section>
+
+    <!-- Quick Links Section -->
+    <section class="quick-links">
+        <div class="container">
+            <h2 class="text-center mb-4">Quick Links</h2>
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="card feature-card">
+                        <div class="card-body text-center">
+                            <h5 class="card-title">Report Cards</h5>
+                            <p class="card-text">View and download student report cards</p>
+                            <a href="report-card.html" class="btn btn-primary">View Reports</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card feature-card">
+                        <div class="card-body text-center">
+                            <h5 class="card-title">School Calendar</h5>
+                            <p class="card-text">View upcoming events and holidays</p>
+                            <a href="calendar.html" class="btn btn-primary">View Calendar</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card feature-card">
+                        <div class="card-body text-center">
+                            <h5 class="card-title">School Notices</h5>
+                            <p class="card-text">Stay updated with the latest school announcements and notices.</p>
+                            <a href="registration-card.html" class="btn btn-primary">View Notices</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card feature-card">
+                        <div class="card-body text-center">
+                            <h5 class="card-title">School Circulars</h5>
+                            <p class="card-text">Access important school circulars and official communications.</p>
+                            <a href="registration-card.html" class="btn btn-primary">View Circulars</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- News Section -->
+    <section class="news-section">
+        <div class="container">
+            <h2 class="text-center mb-4">Latest News</h2>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Upcoming Events</h5>
+                            <p class="card-text">Check out our calendar for upcoming school events and activities.</p>
+                            <a href="calendar.html" class="btn btn-primary">View Events</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Important Notices</h5>
+                            <p class="card-text">Stay updated with the latest school announcements and circulars.</p>
+                            <a href="circulars.html" class="btn btn-primary">View Notices</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">School Updates</h5>
+                            <p class="card-text">Latest updates about school activities and achievements.</p>
+                            <a href="#" class="btn btn-primary">Read More</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4">
+                    <h5>Contact Information</h5>
+                    <p>Address: St Francis Secondary School, Kiboga District, Uganda</p>
+                    <p>Phone: +256 702 541 850</p>
+                    <p>Email: bazzenkyafrancis@gmail.com</p>
+                </div>
+                <div class="col-md-4">
+                    <h5>Quick Links</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="index.html" class="text-white">Home</a></li>
+                        <li><a href="registration.html" class="text-white">Registration</a></li>
+                        <li><a href="report-card.html" class="text-white">Report Cards</a></li>
+                        <li><a href="attendance.html" class="text-white">Attendance</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-4">
+                    <h5>Follow Us</h5>
+                    <div class="social-links">
+                        <a href="#" class="text-white me-2">Facebook</a>
+                        <a href="#" class="text-white me-2">Twitter</a>
+                        <a href="#" class="text-white">Instagram</a>
+                    </div>
+                </div>
+            </div>
+            <hr class="mt-4">
+            <div class="text-center">
+                <p>&copy; 2025 St Francis Secondary School. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

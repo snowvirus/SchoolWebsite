@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>School Calendar - St Francis Secondary School</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="css/styles.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            padding-top: 70px;
+            /* Add padding to account for fixed navbar */
+        }
+
+        .navbar {
+            background-color: #1a237e !important;
+            /* Force blue color */
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+        }
+
+        .calendar-header {
+            background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('images/students.jpeg');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            padding: 60px 0;
+            text-align: center;
+        }
+
+        .card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            background-color: white;
+        }
+
+        .btn-primary {
+            background-color: #1a237e;
+            border-color: #1a237e;
+        }
+
+        .btn-primary:hover {
+            background-color: #0d47a1;
+            border-color: #0d47a1;
+        }
+
+        .footer {
+            background: #1a237e;
+            color: white;
+            padding: 40px 0;
+        }
+
+        .event-card {
+            margin-bottom: 20px;
+            transition: transform 0.3s ease;
+        }
+
+        .event-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .event-date {
+            background-color: #1a237e;
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center" href="index.html">
+                <img src="images/bag.png" alt="St Francis Secondary School Logo" height="50" class="me-2">
+                <span>St Francis Secondary School</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="registration.html">Registration</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="report-card.html">Report Cards</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="attendance.html">Attendance</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="calendar.html">Calendar</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="registration-card.html">Registration Card</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="contact.html">Contact Us</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="admin-login.html">Admin Portal</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Calendar Header -->
+    <section class="calendar-header">
+        <div class="container">
+            <h1 class="display-4">School Calendar</h1>
+            <p class="lead">Stay updated with all school events and activities</p>
+        </div>
+    </section>
+
+    <!-- Calendar Content -->
+    <div class="container">
+        <div class="row">
+            <!-- Upcoming Events -->
+            <div class="col-md-8">
+                <h2 class="mb-4">Upcoming Events</h2>
+                <div class="event-card card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-2">
+                                <div class="event-date">
+                                    <h4>15</h4>
+                                    <p>March</p>
+                                </div>
+                            </div>
+                            <div class="col-md-10">
+                                <h5 class="card-title">Parent-Teacher Meeting</h5>
+                                <p class="card-text">Annual parent-teacher meeting for all classes. Parents are
+                                    requested to attend.</p>
+                                <p class="text-muted">Time: 9:00 AM - 2:00 PM</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="event-card card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-2">
+                                <div class="event-date">
+                                    <h4>20</h4>
+                                    <p>March</p>
+                                </div>
+                            </div>
+                            <div class="col-md-10">
+                                <h5 class="card-title">Sports Day</h5>
+                                <p class="card-text">Annual sports day competition. All students are required to
+                                    participate.</p>
+                                <p class="text-muted">Time: 8:00 AM - 4:00 PM</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="event-card card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-2">
+                                <div class="event-date">
+                                    <h4>25</h4>
+                                    <p>March</p>
+                                </div>
+                            </div>
+                            <div class="col-md-10">
+                                <h5 class="card-title">Science Fair</h5>
+                                <p class="card-text">Annual science fair showcasing student projects and experiments.
+                                </p>
+                                <p class="text-muted">Time: 10:00 AM - 3:00 PM</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Important Dates -->
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h3 class="card-title">Important Dates</h3>
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item">
+                                <strong>March 15:</strong> Parent-Teacher Meeting
+                            </li>
+                            <li class="list-group-item">
+                                <strong>March 20:</strong> Sports Day
+                            </li>
+                            <li class="list-group-item">
+                                <strong>March 25:</strong> Science Fair
+                            </li>
+                            <li class="list-group-item">
+                                <strong>April 1:</strong> Term 1 Exams Begin
+                            </li>
+                            <li class="list-group-item">
+                                <strong>April 15:</strong> Term 1 Ends
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="card mt-4">
+                    <div class="card-body">
+                        <h3 class="card-title">Download Calendar</h3>
+                        <p>Download the complete school calendar for the academic year.</p>
+                        <a href="#" class="btn btn-primary">Download PDF</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer mt-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4">
+                    <h5>Contact Information</h5>
+                    <p>Address: St Francis Secondary School, Kiboga District, Uganda</p>
+                    <p>Phone: +256 702 541 850</p>
+                    <p>Email: bazzenkyafrancis@gmail.com</p>
+                </div>
+                <div class="col-md-4">
+                    <h5>Quick Links</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="index.html" class="text-white">Home</a></li>
+                        <li><a href="registration.html" class="text-white">Registration</a></li>
+                        <li><a href="report-card.html" class="text-white">Report Cards</a></li>
+                        <li><a href="attendance.html" class="text-white">Attendance</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-4">
+                    <h5>Follow Us</h5>
+                    <div class="social-links">
+                        <a href="#" class="text-white me-2">Facebook</a>
+                        <a href="#" class="text-white me-2">Twitter</a>
+                        <a href="#" class="text-white">Instagram</a>
+                    </div>
+                </div>
+            </div>
+            <hr class="mt-4">
+            <div class="text-center">
+                <p>&copy; 2025 St Francis Secondary School. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>
