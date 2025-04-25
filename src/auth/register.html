@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>School Portal - Register</title>
+    <link rel="stylesheet" href="../shared/styles/auth.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="auth-container">
+        <div class="auth-box">
+            <div class="auth-header">
+                <img src="../../images/logo.png" alt="School Logo" class="logo">
+                <h1>Create Account</h1>
+                <p>Join our school community</p>
+            </div>
+            
+            <form id="registerForm" class="auth-form">
+                <div class="form-group">
+                    <label for="role">Register As</label>
+                    <div class="input-group">
+                        <i class="fas fa-user-tag"></i>
+                        <select id="role" name="role" required>
+                            <option value="student">Student</option>
+                            <option value="parent">Parent</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <div class="input-group">
+                        <i class="fas fa-user"></i>
+                        <input type="text" id="username" name="username" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <div class="input-group">
+                        <i class="fas fa-envelope"></i>
+                        <input type="email" id="email" name="email" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <div class="input-group">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" id="password" name="password" required>
+                        <i class="fas fa-eye-slash toggle-password"></i>
+                    </div>
+                    <small class="password-hint">Password must be at least 8 characters long and include numbers and special characters</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="confirmPassword">Confirm Password</label>
+                    <div class="input-group">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" id="confirmPassword" name="confirmPassword" required>
+                        <i class="fas fa-eye-slash toggle-password"></i>
+                    </div>
+                </div>
+
+                <!-- Student specific fields -->
+                <div id="studentFields" class="student-fields">
+                    <div class="form-group">
+                        <label for="registrationNumber">Registration Number</label>
+                        <div class="input-group">
+                            <i class="fas fa-id-card"></i>
+                            <input type="text" id="registrationNumber" name="registrationNumber">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="class">Class</label>
+                        <div class="input-group">
+                            <i class="fas fa-graduation-cap"></i>
+                            <select id="class" name="class">
+                                <option value="">Select Class</option>
+                                <!-- Classes will be populated dynamically -->
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Parent specific fields -->
+                <div id="parentFields" class="parent-fields" style="display: none;">
+                    <div class="form-group">
+                        <label for="fullName">Full Name</label>
+                        <div class="input-group">
+                            <i class="fas fa-user"></i>
+                            <input type="text" id="fullName" name="fullName">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="phone">Phone Number</label>
+                        <div class="input-group">
+                            <i class="fas fa-phone"></i>
+                            <input type="tel" id="phone" name="phone">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="studentRegistrationNumber">Student's Registration Number</label>
+                        <div class="input-group">
+                            <i class="fas fa-id-card"></i>
+                            <input type="text" id="studentRegistrationNumber" name="studentRegistrationNumber">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group terms">
+                    <label class="checkbox-container">
+                        <input type="checkbox" id="terms" name="terms" required>
+                        <span class="checkmark"></span>
+                        I agree to the <a href="#" target="_blank">Terms and Conditions</a> and <a href="#" target="_blank">Privacy Policy</a>
+                    </label>
+                </div>
+
+                <button type="submit" class="btn-primary">
+                    <span>Create Account</span>
+                    <i class="fas fa-arrow-right"></i>
+                </button>
+            </form>
+
+            <div class="auth-footer">
+                <p>Already have an account? <a href="login.html">Login here</a></p>
+            </div>
+        </div>
+
+        <div class="auth-sidebar">
+            <div class="sidebar-content">
+                <h2>Join Our School Community</h2>
+                <p>Create an account to access all features of our school management system.</p>
+                <div class="features">
+                    <div class="feature">
+                        <i class="fas fa-graduation-cap"></i>
+                        <span>Track Academic Progress</span>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-calendar-alt"></i>
+                        <span>View School Calendar</span>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-book"></i>
+                        <span>Access Learning Resources</span>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-comments"></i>
+                        <span>Communicate with Teachers</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../shared/utils/auth.js"></script>
+    <script src="register.js"></script>
+</body>
+</html> 

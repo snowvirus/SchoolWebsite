@@ -4,24 +4,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Registration Card - St Francis Secondary School</title>
+    <title>Report Cards - St Francis Secondary School</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="css/styles.css" rel="stylesheet">
+    <link href="/css/styles.css" rel="stylesheet">
     <style>
         body {
             background-color: #f8f9fa;
             padding-top: 70px;
+            /* Add padding to account for fixed navbar */
         }
 
         .navbar {
             background-color: #1a237e !important;
+            /* Force blue color */
             position: fixed;
             top: 0;
             width: 100%;
             z-index: 1000;
         }
 
-        .registration-header {
+        .report-header {
             background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('images/students.jpeg');
             background-size: cover;
             background-position: center;
@@ -47,26 +49,6 @@
             border-color: #0d47a1;
         }
 
-        .clearance-section {
-            border-top: 2px solid #1a237e;
-            margin-top: 20px;
-            padding-top: 20px;
-        }
-
-        .clearance-item {
-            margin-bottom: 15px;
-        }
-
-        .clearance-item label {
-            display: flex;
-            align-items: center;
-            cursor: pointer;
-        }
-
-        .clearance-item input[type="checkbox"] {
-            margin-right: 10px;
-        }
-
         .footer {
             background: #1a237e;
             color: white;
@@ -80,7 +62,7 @@
     <nav class="navbar navbar-expand-lg navbar-dark">
         <div class="container">
             <a class="navbar-brand d-flex align-items-center" href="index.html">
-                <img src="images/bag.png" alt="St Francis Secondary School Logo" height="50" class="me-2">
+                <img src="/images/bag.png" alt="St Francis Secondary School Logo" height="50" class="me-2">
                 <span>St Francis Secondary School</span>
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
@@ -95,7 +77,7 @@
                         <a class="nav-link" href="registration.html">Registration</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="report-card.html">Report Cards</a>
+                        <a class="nav-link active" href="report-card.html">Report Cards</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="attendance.html">Attendance</a>
@@ -117,11 +99,11 @@
         </div>
     </nav>
 
-    <!-- Registration Card Header -->
-    <section class="registration-header">
+    <!-- Report Card Header -->
+    <section class="report-header">
         <div class="container">
-            <h1 class="display-4">Registration Card</h1>
-            <p class="lead">Generate your registration card and clearance form</p>
+            <h1 class="display-4">Report Cards</h1>
+            <p class="lead">View and download student report cards</p>
         </div>
     </section>
 
@@ -130,14 +112,23 @@
         <!-- Search Form -->
         <div class="card mb-4">
             <div class="card-body">
-                <h4 class="card-title mb-4">Search Student</h4>
-                <form id="searchForm" class="row g-3">
-                    <div class="col-md-6">
+                <h4 class="card-title mb-4">Search Report Card</h4>
+                <form id="reportCardForm" class="row g-3">
+                    <div class="col-md-4">
                         <label for="admissionNumber" class="form-label">Admission Number</label>
                         <input type="text" class="form-control" id="admissionNumber" required>
                     </div>
-                    <div class="col-md-6">
-                        <label for="year" class="form-label">Academic Year</label>
+                    <div class="col-md-4">
+                        <label for="term" class="form-label">Term</label>
+                        <select class="form-select" id="term" required>
+                            <option value="">Select Term</option>
+                            <option value="1">Term 1</option>
+                            <option value="2">Term 2</option>
+                            <option value="3">Term 3</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <label for="year" class="form-label">Year</label>
                         <select class="form-select" id="year" required>
                             <option value="">Select Year</option>
                             <option value="2024">2024</option>
@@ -151,68 +142,57 @@
             </div>
         </div>
 
-        <!-- Registration Card Display -->
-        <div id="registrationCard" class="card" style="display: none;">
-            <div class="card-body">
-                <div class="text-center mb-4">
-                    <h4>St Francis Secondary School</h4>
-                    <p>Kiboga District, Uganda</p>
-                    <h5>Registration Card</h5>
-                </div>
+        <!-- Report Card Display -->
+        <div id="reportCardDisplay" style="display: none;">
+            <div class="card">
+                <div class="card-body">
+                    <div class="text-center mb-4">
+                        <h4>St Francis Secondary School</h4>
+                        <p>Kiboga District, Uganda</p>
+                        <h5>Report Card</h5>
+                    </div>
 
-                <!-- Student Information -->
-                <div class="row mb-4">
-                    <div class="col-md-6">
-                        <p><strong>Student Name:</strong> <span id="studentName">-</span></p>
-                        <p><strong>Admission Number:</strong> <span id="displayAdmissionNumber">-</span></p>
-                        <p><strong>Class:</strong> <span id="studentClass">-</span></p>
-                        <p><strong>Date of Birth:</strong> <span id="dateOfBirth">-</span></p>
+                    <!-- Student Information -->
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <p><strong>Student Name:</strong> <span id="studentName">-</span></p>
+                            <p><strong>Admission Number:</strong> <span id="displayAdmissionNumber">-</span></p>
+                            <p><strong>Class:</strong> <span id="studentClass">-</span></p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><strong>Term:</strong> <span id="displayTerm">-</span></p>
+                            <p><strong>Academic Year:</strong> <span id="displayYear">-</span></p>
+                            <p><strong>Date Issued:</strong> <span id="issueDate">-</span></p>
+                        </div>
                     </div>
-                    <div class="col-md-6">
-                        <p><strong>Academic Year:</strong> <span id="academicYear">-</span></p>
-                        <p><strong>Parent/Guardian:</strong> <span id="parentName">-</span></p>
-                        <p><strong>Contact Number:</strong> <span id="parentContact">-</span></p>
-                        <p><strong>Date Issued:</strong> <span id="issueDate">-</span></p>
-                    </div>
-                </div>
 
-                <!-- Clearance Form -->
-                <div class="clearance-section">
-                    <h5 class="mb-4">Clearance Form</h5>
-                    <div class="clearance-item">
-                        <label>
-                            <input type="checkbox" id="libraryClearance">
-                            Library Clearance
-                        </label>
+                    <!-- Grades Table -->
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Subject</th>
+                                    <th>Marks</th>
+                                    <th>Grade</th>
+                                    <th>Remarks</th>
+                                </tr>
+                            </thead>
+                            <tbody id="gradesTableBody">
+                                <!-- Grades will be populated here -->
+                            </tbody>
+                        </table>
                     </div>
-                    <div class="clearance-item">
-                        <label>
-                            <input type="checkbox" id="accountsClearance">
-                            Accounts Clearance
-                        </label>
-                    </div>
-                    <div class="clearance-item">
-                        <label>
-                            <input type="checkbox" id="sportsClearance">
-                            Sports Department Clearance
-                        </label>
-                    </div>
-                    <div class="clearance-item">
-                        <label>
-                            <input type="checkbox" id="labClearance">
-                            Laboratory Clearance
-                        </label>
-                    </div>
-                    <div class="clearance-item">
-                        <label>
-                            <input type="checkbox" id="hostelClearance">
-                            Hostel Clearance
-                        </label>
-                    </div>
-                </div>
 
-                <div class="text-center mt-4">
-                    <button class="btn btn-primary" onclick="generatePDF()">Generate PDF</button>
+                    <!-- Summary -->
+                    <div class="mt-4">
+                        <p><strong>Total Marks:</strong> <span id="totalMarks">-</span></p>
+                        <p><strong>Average Grade:</strong> <span id="averageGrade">-</span></p>
+                    </div>
+
+                    <!-- PDF Generation Button -->
+                    <div class="text-center mt-4">
+                        <button class="btn btn-primary" onclick="generatePDF()">Generate PDF</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -235,7 +215,6 @@
                         <li><a href="registration.html" class="text-white">Registration</a></li>
                         <li><a href="report-card.html" class="text-white">Report Cards</a></li>
                         <li><a href="attendance.html" class="text-white">Attendance</a></li>
-                        <li><a href="registration-card.html" class="text-white">Registration Card</a></li>
                     </ul>
                 </div>
                 <div class="col-md-4">
@@ -255,7 +234,7 @@
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="js/registration-card.js"></script>
+    <script src="/js/report-card.js"></script>
 </body>
 
 </html>

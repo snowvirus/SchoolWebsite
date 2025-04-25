@@ -5,28 +5,49 @@ document.addEventListener('DOMContentLoaded', function () {
     form.addEventListener('submit', async function (event) {
         event.preventDefault();
 
-        const admissionNumber = document.getElementById('admissionNumber').value;
+        let registrationNumber = document.getElementById('admissionNumber').value;
         const term = document.getElementById('term').value;
         const year = document.getElementById('year').value;
 
+        // Add 'S' prefix if not present
+        if (!registrationNumber.startsWith('S')) {
+            registrationNumber = 'S' + registrationNumber;
+        }
+
         try {
+            // Get the JWT token from localStorage
+            const token = localStorage.getItem('adminToken');
+            if (!token) {
+                throw new Error('Please log in to view report cards');
+            }
+
             // First, get student information
-            const studentResponse = await fetch(`http://localhost:3001/api/students/${admissionNumber}`);
+            const studentResponse = await fetch(`http://localhost:3001/api/students/${registrationNumber}`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
             if (!studentResponse.ok) {
                 throw new Error('Student not found');
             }
-            const student = await studentResponse.json();
+            const studentResult = await studentResponse.json();
+            const student = studentResult.data;
 
             // Then, get grades for the specified term and year
-            const gradesResponse = await fetch(`http://localhost:3001/api/grades/${admissionNumber}?term=${term}&year=${year}`);
+            const gradesResponse = await fetch(`http://localhost:3001/api/grades/${registrationNumber}?term=${term}&year=${year}`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
             if (!gradesResponse.ok) {
                 throw new Error('Grades not found');
             }
-            const grades = await gradesResponse.json();
+            const gradesResult = await gradesResponse.json();
+            const grades = gradesResult.data;
 
             // Update the display with student information
-            document.getElementById('studentName').textContent = `${student.first_name} ${student.last_name}`;
-            document.getElementById('displayAdmissionNumber').textContent = student.admission_number;
+            document.getElementById('studentName').textContent = `${student.firstName} ${student.lastName}`;
+            document.getElementById('displayAdmissionNumber').textContent = student.registrationNumber;
             document.getElementById('studentClass').textContent = student.class;
             document.getElementById('displayTerm').textContent = `Term ${term}`;
             document.getElementById('displayYear').textContent = year;
@@ -76,57 +97,52 @@ document.addEventListener('DOMContentLoaded', function () {
         return 'F';
     }
 
-    // Add downloadPDF function
-    async function downloadPDF() {
+    // Function to download PDF
+    window.downloadPDF = async function() {
         try {
-            console.log('Download PDF button clicked');
-
-            const admissionNumber = document.getElementById('admissionNumber').value;
+            let registrationNumber = document.getElementById('admissionNumber').value;
             const term = document.getElementById('term').value;
             const year = document.getElementById('year').value;
 
-            console.log('Form values:', { admissionNumber, term, year });
+            if (!registrationNumber || !term || !year) {
+                throw new Error('Please fill in all required fields (Registration Number, Term, Year)');
+            }
 
-            if (!admissionNumber || !term || !year) {
-                throw new Error('Please fill in all required fields (Admission Number, Term, Year)');
+            // Add 'S' prefix if not present
+            if (!registrationNumber.startsWith('S')) {
+                registrationNumber = 'S' + registrationNumber;
             }
 
             // Get the JWT token from localStorage
             const token = localStorage.getItem('adminToken');
-            console.log('Token exists:', !!token);
-
             if (!token) {
                 throw new Error('Please log in to download report cards');
             }
 
-            console.log('Making download request...');
             // Make the download request
-            const response = await fetch(`http://localhost:3001/api/report-cards/${admissionNumber}/download`, {
-                method: 'GET',
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                    'Content-Type': 'application/json'
+            const response = await fetch(
+                `http://localhost:3001/api/report-cards/${registrationNumber}/download?term=${term}&year=${year}`,
+                {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
                 }
-            });
-
-            console.log('Response status:', response.status);
-            console.log('Response headers:', Object.fromEntries(response.headers.entries()));
+            );
 
             if (!response.ok) {
-                const errorText = await response.text();
-                console.error('Error response:', errorText);
-                throw new Error(`Failed to download report card: ${response.status} ${response.statusText}`);
+                const errorData = await response.json();
+                throw new Error(errorData.message || 'Failed to download report card');
             }
 
             // Get the blob from the response
             const blob = await response.blob();
-            console.log('Blob received:', blob);
 
             // Create a download link
             const url = window.URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = `report-card-${admissionNumber}.pdf`;
+            a.download = `report-card-${registrationNumber}.pdf`;
             document.body.appendChild(a);
             a.click();
 
@@ -135,11 +151,10 @@ document.addEventListener('DOMContentLoaded', function () {
             document.body.removeChild(a);
 
         } catch (error) {
-            console.error('Error in downloadPDF:', error);
-            alert('Error downloading report card: ' + error.message);
-            throw error; // Re-throw the error to see it in the console
+            console.error('Error downloading report card:', error);
+            alert(error.message);
         }
-    }
+    };
 });
 
 function generatePDF() {

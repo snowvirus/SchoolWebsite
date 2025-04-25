@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>School Portal - Login</title>
+    <link rel="stylesheet" href="../shared/styles/auth.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="auth-container">
+        <div class="auth-box">
+            <div class="auth-header">
+                <img src="../../images/logo.png" alt="School Logo" class="logo">
+                <h1>School Portal</h1>
+                <p>Welcome back! Please login to your account</p>
+            </div>
+            
+            <form id="loginForm" class="auth-form">
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <div class="input-group">
+                        <i class="fas fa-user"></i>
+                        <input type="text" id="username" name="username" required>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <div class="input-group">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" id="password" name="password" required>
+                        <i class="fas fa-eye-slash toggle-password"></i>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="role">Login As</label>
+                    <div class="input-group">
+                        <i class="fas fa-user-tag"></i>
+                        <select id="role" name="role" required>
+                            <option value="student">Student</option>
+                            <option value="parent">Parent</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group remember-forgot">
+                    <label class="checkbox-container">
+                        <input type="checkbox" id="rememberMe" name="rememberMe">
+                        <span class="checkmark"></span>
+                        Remember me
+                    </label>
+                    <a href="forgot-password.html" class="forgot-password">Forgot Password?</a>
+                </div>
+
+                <button type="submit" class="btn-primary">
+                    <span>Login</span>
+                    <i class="fas fa-arrow-right"></i>
+                </button>
+            </form>
+
+            <div class="auth-footer">
+                <p>Don't have an account? <a href="register.html">Register here</a></p>
+            </div>
+        </div>
+
+        <div class="auth-sidebar">
+            <div class="sidebar-content">
+                <h2>School Management System</h2>
+                <p>Access your academic information, assignments, and more in one place.</p>
+                <div class="features">
+                    <div class="feature">
+                        <i class="fas fa-graduation-cap"></i>
+                        <span>View Grades & Progress</span>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-calendar-alt"></i>
+                        <span>Track Attendance</span>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-book"></i>
+                        <span>Access Learning Materials</span>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-comments"></i>
+                        <span>Communicate with Teachers</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../shared/utils/auth.js"></script>
+    <script src="login.js"></script>
+</body>
+</html> 

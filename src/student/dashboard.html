@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Dashboard - School Portal</title>
+    <link rel="stylesheet" href="/shared/styles/dashboard.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <img src="/images/bag.png" alt="School Logo" class="logo">
+                <h1>School Portal</h1>
+            </div>
+
+            <nav class="sidebar-nav">
+                <ul>
+                    <li class="active">
+                        <a href="/student/dashboard">
+                            <i class="fas fa-home"></i>
+                            <span>Dashboard</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/student/academic">
+                            <i class="fas fa-graduation-cap"></i>
+                            <span>Academic</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/student/attendance">
+                            <i class="fas fa-calendar-check"></i>
+                            <span>Attendance</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/student/assignments">
+                            <i class="fas fa-tasks"></i>
+                            <span>Assignments</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/student/library">
+                            <i class="fas fa-book"></i>
+                            <span>Library</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/student/messages">
+                            <i class="fas fa-envelope"></i>
+                            <span>Messages</span>
+                            <span class="badge">3</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/student/profile">
+                            <i class="fas fa-user"></i>
+                            <span>Profile</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+
+            <div class="sidebar-footer">
+                <a href="#" id="logoutBtn">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Logout</span>
+                </a>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Top Navigation Bar -->
+            <header class="top-bar">
+                <div class="search-bar">
+                    <i class="fas fa-search"></i>
+                    <input type="text" placeholder="Search...">
+                </div>
+
+                <div class="user-info">
+                    <div class="notifications">
+                        <i class="fas fa-bell"></i>
+                        <span class="badge">5</span>
+                    </div>
+                    <div class="user-profile">
+                        <img src="/images/bag.png" alt="User Avatar" class="avatar">
+                        <span class="username" id="userProfileName">Student</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Dashboard Content -->
+            <div class="dashboard-content p-4">
+                <div class="welcome-section mb-4 pb-3 border-bottom">
+                    <h2 class="fw-semibold" id="welcomeMessage">Welcome back!</h2>
+                    <p class="text-muted mb-0">Here's what's happening in your academic journey</p>
+                </div>
+
+                <!-- Quick Stats -->
+                <div class="row g-4 mb-4 quick-stats">
+                    <div class="col-lg-4 col-md-6">
+                        <div class="stat-card card h-100 border-0 shadow-sm">
+                            <div class="card-body d-flex align-items-center p-3">
+                                <div class="stat-icon me-3 fs-2 text-success">
+                                    <i class="fas fa-calendar-check"></i>
+                                </div>
+                                <div class="stat-info">
+                                    <h3 class="fs-6 text-muted mb-1">Attendance</h3>
+                                    <p class="stat-value h4 mb-0 fw-bold" data-stat="attendance">--%</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-6">
+                        <div class="stat-card card h-100 border-0 shadow-sm">
+                            <div class="card-body d-flex align-items-center p-3">
+                                <div class="stat-icon me-3 fs-2 text-warning">
+                                    <i class="fas fa-tasks"></i>
+                                </div>
+                                <div class="stat-info">
+                                    <h3 class="fs-6 text-muted mb-1">Pending Assign.</h3>
+                                    <p class="stat-value h4 mb-0 fw-bold" data-stat="assignments">--</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-6">
+                         <div class="stat-card card h-100 border-0 shadow-sm">
+                            <div class="card-body d-flex align-items-center p-3">
+                                <div class="stat-icon me-3 fs-2 text-info">
+                                    <i class="fas fa-book"></i>
+                                </div>
+                                <div class="stat-info">
+                                    <h3 class="fs-6 text-muted mb-1">Books Borrowed</h3>
+                                    <p class="stat-value h4 mb-0 fw-bold" data-stat="books">--</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Activities & Upcoming Events -->
+                <div class="row g-4">
+                    <div class="col-lg-6">
+                        <div class="card border-0 shadow-sm h-100">
+                            <div class="card-header bg-light fw-semibold">Recent Activities</div>
+                            <div class="card-body recent-activities">
+                                <div class="activity-list list-group list-group-flush">
+                                    <!-- Activity items will be loaded here by JS -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-6">
+                         <div class="card border-0 shadow-sm h-100">
+                             <div class="card-header bg-light fw-semibold">Upcoming Events</div>
+                             <div class="card-body upcoming-events">
+                                <div class="event-list list-group list-group-flush">
+                                    <!-- Event items will be loaded here by JS -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="/shared/utils/auth.js"></script>
+    <script src="/shared/utils/dashboard.js"></script>
+    <script src="/student/dashboard.js"></script>
+</body>
+</html> 

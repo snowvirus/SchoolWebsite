@@ -7,6 +7,8 @@ const jwt = require('jsonwebtoken');
 const path = require('path');
 const PDFDocument = require('pdfkit');
 const fs = require('fs');
+const { initializeDatabase } = require('./src/database/initDatabase');
+const studentRoutes = require('./src/routes/studentRoutes');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -17,16 +19,110 @@ console.log('DB_HOST:', process.env.DB_HOST);
 console.log('DB_USER:', process.env.DB_USER);
 console.log('DB_NAME:', process.env.DB_NAME);
 console.log('PORT:', process.env.PORT);
-console.log('Has DB_PASSWORD:', process.env.DB_PASSWORD ? 'Yes' : 'No');
+console.log('JWT_SECRET:', process.env.JWT_SECRET ? 'Set' : 'Not set');
 
 // Middleware
 app.use(cors());
 app.use(express.json());
 
-// Serve static files from the root directory
-app.use(express.static(__dirname));
+// Redirect root to login page FIRST
+app.get('/', (req, res) => {
+    res.redirect('/login.html');
+});
 
-// Database configuration
+// Serve static files from the public directory AFTER checking root redirect
+app.use(express.static(path.join(__dirname, 'src/public')));
+
+// Serve static files from src/shared for dashboard styles/utils
+app.use('/shared', express.static(path.join(__dirname, 'src/shared')));
+
+// Serve student-specific JS file
+app.use('/student', express.static(path.join(__dirname, 'src/student')));
+
+// Authentication middleware
+const authenticateToken = (req, res, next) => {
+    // Define public routes/patterns that bypass ALL checks in this middleware
+    const publicPaths = [
+        /^\/login\.html$/,
+        /^\/registration\.html$/,
+        /^\/api\/auth\/login$/,
+        /^\/api\/students$/,
+        /^\/images\//, // Allow static assets
+        /^\/css\//,
+        /^\/js\//
+    ];
+
+    // Check if the requested path matches any public pattern
+    if (publicPaths.some(pattern => pattern.test(req.path))) {
+        console.log(`Auth Bypass: Public path ${req.path}`);
+        return next(); // Skip auth for public paths
+    }
+
+    // For API routes, require a token from the header
+    if (req.path.startsWith('/api/')) {
+        console.log(`Auth Check: API path ${req.path}, checking token header...`);
+        const token = req.headers['authorization']?.split(' ')[1];
+        if (!token) {
+            console.log(`Auth Fail: API path ${req.path} - Token missing`);
+            return res.status(401).json({ error: 'Authentication token required' });
+        }
+
+        jwt.verify(token, process.env.JWT_SECRET, (err, user) => { // Use JWT_SECRET constant
+            if (err) {
+                console.log(`Auth Fail: API path ${req.path} - Token invalid/expired`, err.message);
+                return res.status(401).json({ error: 'Invalid or expired token' });
+            }
+            console.log(`Auth OK: API path ${req.path} - Token valid for user`, user.username);
+            req.user = user; // Attach user info to the request for API handlers
+            next();
+        });
+    } else {
+        // For non-API, non-public HTML page routes (like /student/dashboard)
+        // Rely on client-side JS to check localStorage for the token
+        console.log(`Auth Bypass: Non-API path ${req.path}, allowing server-side load.`);
+        // We could optionally do a basic token *cookie* check here if implemented
+        next();
+    }
+};
+
+// Protect all routes except public ones
+app.use(authenticateToken);
+
+// Serve other pages
+app.get('/admin', (req, res) => {
+    res.sendFile(path.join(__dirname, 'src/public', 'admin.html'));
+});
+
+app.get('/admin-login', (req, res) => {
+    res.sendFile(path.join(__dirname, 'src/public', 'admin-login.html'));
+});
+
+app.get('/index', (req, res) => {
+    res.sendFile(path.join(__dirname, 'src/public', 'index.html'));
+});
+
+// Serve Student Dashboard (Existing file)
+app.get('/student/dashboard', (req, res) => {
+    // This route is protected by authenticateToken middleware already
+    res.sendFile(path.join(__dirname, 'src/student', 'dashboard.html'));
+});
+
+// Serve Admin Dashboard (Existing file)
+app.get('/admin/dashboard', (req, res) => {
+    // Protected by authenticateToken
+    res.sendFile(path.join(__dirname, 'src/admin', 'dashboard.html')); 
+});
+
+// Add routes for other student pages
+const studentPages = ['academic', 'attendance', 'assignments', 'library', 'messages', 'profile'];
+studentPages.forEach(page => {
+    app.get(`/student/${page}`, (req, res) => {
+        // Protected by authenticateToken
+        res.sendFile(path.join(__dirname, 'src/student', `${page}.html`));
+    });
+});
+
+// Database configuration (without password)
 const dbConfig = {
     host: process.env.DB_HOST,
     user: process.env.DB_USER,
@@ -37,6 +133,7 @@ const dbConfig = {
     queueLimit: 0
 };
 
+// Log configuration without sensitive data
 console.log('Database configuration (without password):', {
     host: dbConfig.host,
     user: dbConfig.user,
@@ -44,91 +141,108 @@ console.log('Database configuration (without password):', {
     hasPassword: dbConfig.password ? 'Yes' : 'No'
 });
 
+// Create uploads directory if it doesn't exist
+const uploadsDir = path.join(__dirname, 'src/public/uploads');
+if (!fs.existsSync(uploadsDir)) {
+    fs.mkdirSync(uploadsDir, { recursive: true });
+}
+
 // Database connection
 const pool = mysql.createPool(dbConfig);
 
-// Test database connection
-pool.getConnection()
-    .then(connection => {
+// Initialize database and start server
+async function startServer() {
+    try {
+        // Test database connection
+        const connection = await pool.getConnection();
         console.log('Successfully connected to the database');
         connection.release();
-    })
-    .catch(err => {
-        console.error('Error connecting to the database:', err);
-        console.error('Connection details:', {
-            host: process.env.DB_HOST,
-            user: process.env.DB_USER,
-            database: process.env.DB_NAME,
-            hasPassword: process.env.DB_PASSWORD ? 'Yes' : 'No'
+
+        // Initialize database tables
+        await initializeDatabase(pool);
+        console.log('Database tables initialized successfully');
+
+        // Start the server
+        app.listen(PORT, () => {
+            console.log(`Server running on port ${PORT}`);
+            console.log(`Access the website at http://localhost:${PORT}`);
         });
-    });
+    } catch (err) {
+        console.error('Error starting server:', err);
+        process.exit(1);
+    }
+}
+
+// Start the server
+startServer();
 
 // JWT Secret
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
 
-// Middleware to verify JWT token
-const authenticateToken = (req, res, next) => {
-    const authHeader = req.headers['authorization'];
-    const token = authHeader && authHeader.split(' ')[1];
-
-    if (!token) {
-        return res.status(401).json({ message: 'Access denied. No token provided.' });
-    }
-
-    jwt.verify(token, JWT_SECRET, (err, user) => {
-        if (err) {
-            return res.status(403).json({ message: 'Invalid token.' });
-        }
-        req.user = user;
-        next();
-    });
-};
-
-// Create uploads directory if it doesn't exist
-if (!fs.existsSync('uploads')) {
-    fs.mkdirSync('uploads');
-}
-
 // API Routes
 
 // Admin Login
-app.post('/api/login', async (req, res) => {
+app.post('/api/auth/login', async (req, res) => {
     try {
+        // Get username and password from request body
         const { username, password } = req.body;
-        console.log('Login attempt:', { username });
+        console.log('Login attempt for username:', username);
 
+        // Find user by username in the 'users' table
         const [rows] = await pool.execute(
-            'SELECT * FROM admin_users WHERE username = ?',
+            'SELECT * FROM users WHERE username = ?',
             [username]
         );
 
-        console.log('User found:', rows.length > 0);
-
         if (rows.length === 0) {
-            console.log('User not found');
+            console.log('User not found:', username);
             return res.status(401).json({ message: 'Invalid credentials' });
         }
 
         const user = rows[0];
-        const validPassword = await bcrypt.compare(password, user.password_hash);
-        console.log('Password valid:', validPassword);
+
+        // Verify the password using bcrypt
+        const hashedPassword = user.password;
+        console.log('--- Password Comparison Debug ---');
+        console.log('Password received from request:', password);
+        console.log('Hashed password retrieved from DB:', hashedPassword);
+        const validPassword = await bcrypt.compare(password, hashedPassword);
+        // const storedPassword = user.password; // TEMP Plain text comparison
+        // const validPassword = (password === storedPassword); // TEMP Direct string comparison
+        // console.log('TEMP DEBUG: Comparing plain text password. Valid:', validPassword);
+        console.log('Password valid for', username, ':', validPassword);
 
         if (!validPassword) {
-            console.log('Invalid password');
+            console.log('Invalid password for user:', username);
+            // console.log('Invalid password for user (plain text check):', username); // Temp log
             return res.status(401).json({ message: 'Invalid credentials' });
         }
 
+        // Check if user is active
+        if (!user.is_active) {
+            console.log('User account is inactive:', username);
+            return res.status(403).json({ message: 'Account is inactive. Please contact administrator.' });
+        }
+
+        // Create JWT token including user details
         const token = jwt.sign(
-            { id: user.id, username: user.username, role: user.role },
-            JWT_SECRET,
+            { id: user.id, username: user.username, roleId: user.role_id }, // Use role_id
+            JWT_SECRET, // Use the defined JWT_SECRET constant
             { expiresIn: '24h' }
         );
 
-        console.log('Login successful');
-        res.json({ token });
+        console.log('Login successful for user:', username);
+        res.json({
+            token,
+            user: {
+                id: user.id,
+                username: user.username,
+                roleId: user.role_id // Include role_id in the response
+            }
+        });
     } catch (error) {
         console.error('Login error:', error);
-        res.status(500).json({ message: 'Server error' });
+        res.status(500).json({ message: 'Server error during login' });
     }
 });
 
@@ -213,58 +327,90 @@ app.get('/api/students', async (req, res) => {
     }
 });
 
-// Get Student by Admission Number
-app.get('/api/students/:admissionNumber', async (req, res) => {
+// Get student by registration number
+app.get('/api/students/:registrationNumber', async (req, res) => {
     try {
-        const { admissionNumber } = req.params;
+        const { registrationNumber } = req.params;
+        console.log('Fetching student with registration number:', registrationNumber);
 
-        const [rows] = await pool.query(
-            'SELECT * FROM students WHERE admission_number = ?',
-            [admissionNumber]
+        const [rows] = await pool.execute(
+            'SELECT s.*, c.name as class_name FROM students s LEFT JOIN classes c ON s.class_id = c.id WHERE s.registration_number = ?',
+            [registrationNumber]
         );
 
         if (rows.length === 0) {
-            return res.status(404).json({ error: 'Student not found' });
+            return res.status(404).json({
+                success: false,
+                message: 'Student not found'
+            });
         }
 
-        res.json(rows[0]);
+        const student = rows[0];
+        console.log('Found student:', student);
+
+        res.json({
+            success: true,
+            data: {
+                id: student.id,
+                registrationNumber: student.registration_number,
+                firstName: student.first_name,
+                lastName: student.last_name,
+                dateOfBirth: student.date_of_birth,
+                gender: student.gender,
+                class: student.class_name,
+                stream: student.stream,
+                parentName: student.parent_name,
+                parentPhone: student.parent_phone,
+                parentEmail: student.parent_email,
+                address: student.address,
+                enrollmentDate: student.enrollment_date
+            }
+        });
     } catch (error) {
         console.error('Error fetching student:', error);
         res.status(500).json({
-            error: 'Error fetching student data',
-            details: process.env.NODE_ENV === 'development' ? error.message : undefined
+            success: false,
+            message: 'Error fetching student data',
+            error: process.env.NODE_ENV === 'development' ? error.message : undefined
         });
     }
 });
 
 // Get Student Grades
-app.get('/api/grades/:admissionNumber', async (req, res) => {
+app.get('/api/grades/:registrationNumber', async (req, res) => {
     try {
-        const { admissionNumber } = req.params;
+        const { registrationNumber } = req.params;
         const { term, year } = req.query;
 
         // First get the student ID
         const [student] = await pool.execute(
-            'SELECT id FROM students WHERE admission_number = ?',
-            [admissionNumber]
+            'SELECT id FROM students WHERE registration_number = ?',
+            [registrationNumber]
         );
 
         if (student.length === 0) {
-            return res.status(404).json({ message: 'Student not found' });
+            return res.status(404).json({ 
+                success: false,
+                message: 'Student not found' 
+            });
         }
 
         // Then get the grades with subject names
         const [grades] = await pool.execute(`
-            SELECT g.*, s.subject_name 
+            SELECT g.*, s.name as subject_name 
             FROM grades g
             JOIN subjects s ON g.subject_id = s.id
             WHERE g.student_id = ? AND g.term = ? AND g.year = ?
         `, [student[0].id, term, year]);
 
-        res.json(grades);
+        res.json({
+            success: true,
+            data: grades
+        });
     } catch (error) {
         console.error('Error fetching grades:', error);
         res.status(500).json({
+            success: false,
             message: 'Error fetching grades',
             error: process.env.NODE_ENV === 'development' ? error.message : undefined
         });
@@ -279,8 +425,8 @@ app.post('/api/students', async (req, res) => {
 
         // Validate required fields
         const requiredFields = [
-            'admissionNumber', 'firstName', 'lastName', 'dateOfBirth',
-            'gender', 'class', 'parentName', 'parentPhone'
+            'registrationNumber', 'firstName', 'lastName', 'dateOfBirth',
+            'gender', 'class', 'stream', 'parentName', 'parentPhone'
         ];
 
         const missingFields = requiredFields.filter(field => !studentData[field]);
@@ -296,47 +442,91 @@ app.post('/api/students', async (req, res) => {
             });
         }
 
-        // Check if admission number already exists
-        const [existingStudent] = await pool.execute(
-            'SELECT admission_number FROM students WHERE admission_number = ?',
-            [studentData.admissionNumber]
-        );
+        // Start a transaction
+        const connection = await pool.getConnection();
+        await connection.beginTransaction();
 
-        if (existingStudent.length > 0) {
-            return res.status(409).json({
-                success: false,
-                message: `Student with admission number ${studentData.admissionNumber} already exists. Please use a different admission number.`
+        try {
+            console.log('Creating student record...');
+
+            // First, get the student role ID
+            const [roleResult] = await connection.execute(
+                'SELECT id FROM user_roles WHERE name = ?',
+                ['student']
+            );
+
+            if (roleResult.length === 0) {
+                throw new Error('Student role not found');
+            }
+
+            // Create a user record
+            const [userResult] = await connection.execute(
+                `INSERT INTO users 
+                (username, password, email, role_id, is_active) 
+                VALUES (?, ?, ?, ?, ?)`,
+                [
+                    studentData.registrationNumber, // Use registration number as username
+                    '$2a$10$defaultpassword', // Default hashed password
+                    studentData.parentEmail || `${studentData.registrationNumber}@school.com`,
+                    roleResult[0].id,
+                    true
+                ]
+            );
+
+            // Get the class ID
+            const [classResult] = await connection.execute(
+                'SELECT id FROM classes WHERE name = ?',
+                [studentData.class]
+            );
+
+            if (classResult.length === 0) {
+                throw new Error(`Class ${studentData.class} not found`);
+            }
+
+            // Insert student data
+            const [result] = await connection.execute(
+                `INSERT INTO students 
+                (registration_number, first_name, last_name, date_of_birth, gender, 
+                class_id, parent_name, parent_phone, parent_email, address, enrollment_date) 
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURDATE())`,
+                [
+                    studentData.registrationNumber,
+                    studentData.firstName,
+                    studentData.lastName,
+                    studentData.dateOfBirth,
+                    studentData.gender === 'male' ? 'M' : 'F',
+                    classResult[0].id,
+                    studentData.parentName,
+                    studentData.parentPhone,
+                    studentData.parentEmail || null,
+                    studentData.address || ''
+                ]
+            );
+
+            console.log('Student record created successfully');
+            await connection.commit();
+            console.log('Transaction committed');
+            
+            res.json({
+                success: true,
+                message: 'Student registered successfully',
+                registrationNumber: studentData.registrationNumber,
+                id: result.insertId
             });
+        } catch (error) {
+            console.error('Error during registration transaction:', error);
+            console.error('Error details:', {
+                code: error.code,
+                errno: error.errno,
+                sqlMessage: error.sqlMessage,
+                sqlState: error.sqlState,
+                sql: error.sql
+            });
+            await connection.rollback();
+            throw error;
+        } finally {
+            connection.release();
         }
-
-        // Insert student data
-        const [result] = await pool.execute(
-            `INSERT INTO students 
-            (admission_number, first_name, last_name, date_of_birth, gender, class, stream,
-            parent_name, parent_phone, parent_email, address) 
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-            [
-                studentData.admissionNumber,
-                studentData.firstName,
-                studentData.lastName,
-                studentData.dateOfBirth,
-                studentData.gender,
-                studentData.class,
-                'A', // Default stream value
-                studentData.parentName,
-                studentData.parentPhone,
-                studentData.parentEmail || '',
-                studentData.address || ''
-            ]
-        );
-
-        console.log('Registration successful:', result);
-        res.json({
-            success: true,
-            message: 'Student registered successfully',
-            admissionNumber: studentData.admissionNumber,
-            id: result.insertId
-        });
     } catch (error) {
         console.error('Registration error:', error);
 
@@ -344,7 +534,7 @@ app.post('/api/students', async (req, res) => {
         if (error.code === 'ER_DUP_ENTRY') {
             return res.status(409).json({
                 success: false,
-                message: `Student with admission number ${studentData.admissionNumber} already exists. Please use a different admission number.`
+                message: `Student with registration number ${req.body.registrationNumber} already exists. Please use a different registration number.`
             });
         }
 
@@ -400,92 +590,158 @@ app.post('/api/grades', authenticateToken, async (req, res) => {
 });
 
 // Download Report Card
-app.get('/api/report-cards/:studentId/download', authenticateToken, async (req, res) => {
+app.get('/api/report-cards/:registrationNumber/download', authenticateToken, async (req, res) => {
     try {
-        const { studentId } = req.params;
+        const { registrationNumber } = req.params;
+        const { term, year } = req.query;
 
-        // Get student details
+        if (!term || !year) {
+            return res.status(400).json({ 
+                success: false,
+                message: 'Term and year are required' 
+            });
+        }
+
+        // Get student details with class name
         const [students] = await pool.execute(
-            'SELECT * FROM students WHERE id = ?',
-            [studentId]
+            'SELECT s.*, c.name as class_name FROM students s LEFT JOIN classes c ON s.class_id = c.id WHERE s.registration_number = ?',
+            [registrationNumber]
         );
 
         if (students.length === 0) {
-            return res.status(404).json({ error: 'Student not found' });
+            return res.status(404).json({ 
+                success: false,
+                message: 'Student not found' 
+            });
         }
 
         const student = students[0];
 
-        // Get student's grades
-        const [grades] = await pool.execute(
-            'SELECT * FROM grades WHERE student_id = ?',
-            [studentId]
-        );
+        // Get student's grades with subject names
+        const [grades] = await pool.execute(`
+            SELECT g.*, s.name as subject_name 
+            FROM grades g
+            JOIN subjects s ON g.subject_id = s.id
+            WHERE g.student_id = ? AND g.term = ? AND g.year = ?
+        `, [student.id, term, year]);
 
         // Create a new PDF document
         const doc = new PDFDocument();
 
         // Set response headers
         res.setHeader('Content-Type', 'application/pdf');
-        res.setHeader('Content-Disposition', `attachment; filename=report-card-${student.admission_number}.pdf`);
+        res.setHeader('Content-Disposition', `attachment; filename=report-card-${student.registration_number}.pdf`);
 
         // Pipe PDF to response
         doc.pipe(res);
 
-        // Add content to PDF
-        doc.fontSize(20).text('Report Card', { align: 'center' });
+        // Add school logo and header
+        doc.fontSize(20).text('St Francis Secondary School', { align: 'center' });
+        doc.fontSize(14).text('Kiboga District, Uganda', { align: 'center' });
+        doc.moveDown();
+        doc.fontSize(16).text('Student Report Card', { align: 'center' });
+        doc.moveDown();
+
+        // Add term and year
+        doc.fontSize(12).text(`Term ${term}, ${year}`, { align: 'center' });
         doc.moveDown();
 
         // Student details
-        doc.fontSize(12).text(`Student: ${student.first_name} ${student.last_name}`);
-        doc.text(`Admission Number: ${student.admission_number}`);
-        doc.text(`Class: ${student.class}`);
+        doc.fontSize(12);
+        doc.text(`Student Name: ${student.first_name} ${student.last_name}`);
+        doc.text(`Registration Number: ${student.registration_number}`);
+        doc.text(`Class: ${student.class_name}`);
+        doc.text(`Date of Birth: ${new Date(student.date_of_birth).toLocaleDateString()}`);
+        doc.text(`Parent/Guardian: ${student.parent_name}`);
         doc.moveDown();
 
         // Grades table
         if (grades.length > 0) {
-            doc.fontSize(14).text('Grades', { align: 'center' });
+            // Calculate total and average
+            let totalMarks = 0;
+            grades.forEach(grade => totalMarks += grade.marks);
+            const averageMarks = (totalMarks / grades.length).toFixed(2);
+
+            doc.fontSize(14).text('Academic Performance', { align: 'center' });
             doc.moveDown();
 
             // Table headers
-            const tableHeaders = ['Subject', 'Grade', 'Term', 'Year'];
+            const tableHeaders = ['Subject', 'Marks', 'Grade', 'Remarks'];
             const tableData = grades.map(grade => [
-                grade.subject,
+                grade.subject_name,
+                grade.marks.toString(),
                 grade.grade,
-                grade.term,
-                grade.year
+                grade.remarks || '-'
             ]);
 
             // Draw table
             doc.fontSize(10);
             let y = doc.y;
             const rowHeight = 20;
-            const colWidth = 120;
+            const colWidths = [200, 100, 100, 140];
+            let xOffset = 50;
 
             // Draw headers
             tableHeaders.forEach((header, i) => {
-                doc.text(header, 50 + (i * colWidth), y);
+                doc.text(header, xOffset, y, { width: colWidths[i], align: 'left' });
+                xOffset += colWidths[i];
             });
 
             // Draw rows
-            tableData.forEach((row, rowIndex) => {
-                y += rowHeight;
-                row.forEach((cell, colIndex) => {
-                    doc.text(cell, 50 + (colIndex * colWidth), y);
+            y += rowHeight;
+            tableData.forEach((row) => {
+                xOffset = 50;
+                row.forEach((cell, i) => {
+                    doc.text(cell, xOffset, y, { width: colWidths[i], align: 'left' });
+                    xOffset += colWidths[i];
                 });
+                y += rowHeight;
             });
+
+            // Add summary
+            doc.moveDown();
+            doc.fontSize(12);
+            doc.text(`Total Marks: ${totalMarks}`);
+            doc.text(`Average Marks: ${averageMarks}`);
+            doc.text(`Overall Grade: ${calculateGrade(averageMarks)}`);
         } else {
-            doc.text('No grades available for this student.');
+            doc.text('No grades available for this term.');
         }
+
+        // Add signature lines
+        doc.moveDown(4);
+        doc.fontSize(10);
+        doc.text('_______________________', 50, doc.y);
+        doc.text('_______________________', 400, doc.y);
+        doc.moveDown();
+        doc.text('Class Teacher', 50);
+        doc.text('Principal', 400);
+
+        // Add footer
+        doc.fontSize(8);
+        doc.text(`Generated on ${new Date().toLocaleDateString()}`, 50, doc.page.height - 50);
 
         // Finalize PDF
         doc.end();
 
     } catch (error) {
         console.error('Error generating report card:', error);
-        res.status(500).json({ error: 'Failed to generate report card' });
+        res.status(500).json({ 
+            success: false,
+            message: 'Failed to generate report card',
+            error: process.env.NODE_ENV === 'development' ? error.message : undefined
+        });
     }
 });
+
+// Helper function to calculate grade
+function calculateGrade(marks) {
+    if (marks >= 80) return 'A';
+    if (marks >= 70) return 'B';
+    if (marks >= 60) return 'C';
+    if (marks >= 50) return 'D';
+    return 'F';
+}
 
 // Download Calendar
 app.get('/api/calendar/download', authenticateToken, async (req, res) => {
@@ -599,6 +855,9 @@ app.delete('/api/calendar-events/:id', authenticateToken, async (req, res) => {
     }
 });
 
+// Register routes
+app.use('/api/students', studentRoutes);
+
 // Error handling middleware
 app.use((err, req, res, next) => {
     console.error('Global error handler:', err);
@@ -607,14 +866,4 @@ app.use((err, req, res, next) => {
         message: 'Internal server error',
         error: process.env.NODE_ENV === 'development' ? err.message : 'An error occurred'
     });
-});
-
-// Start server
-app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
-}).on('error', (err) => {
-    console.error('Server startup error:', err);
-    if (err.code === 'EADDRINUSE') {
-        console.error(`Port ${PORT} is already in use. Please choose a different port.`);
-    }
 }); 

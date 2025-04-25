@@ -15,18 +15,6 @@ async function setupAdmin() {
         const connection = await mysql.createConnection(dbConfig);
         console.log('Connected to database');
 
-        // Create admin_users table if it doesn't exist
-        await connection.execute(`
-            CREATE TABLE IF NOT EXISTS admin_users (
-                id INT AUTO_INCREMENT PRIMARY KEY,
-                username VARCHAR(50) UNIQUE NOT NULL,
-                password_hash VARCHAR(255) NOT NULL,
-                role VARCHAR(20) DEFAULT 'admin',
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-            )
-        `);
-        console.log('Admin users table created/verified');
-
         // Hash password
         const password = 'admin123'; // Default password
         const salt = await bcrypt.genSalt(10);
@@ -34,8 +22,8 @@ async function setupAdmin() {
 
         // Insert admin user if not exists
         await connection.execute(`
-            INSERT IGNORE INTO admin_users (username, password_hash, role)
-            VALUES (?, ?, 'admin')
+            INSERT IGNORE INTO admin_users (username, password, full_name, email, role)
+            VALUES (?, ?, 'Administrator', 'admin@school.com', 'admin')
         `, ['admin', passwordHash]);
 
         console.log('Admin user created/verified');

@@ -17,12 +17,13 @@ document.addEventListener('DOMContentLoaded', function () {
 
             // Gather form data
             const formData = {
-                admissionNumber: document.getElementById('admissionNumber')?.value || '',
+                registrationNumber: document.getElementById('registrationNumber')?.value || '',
                 firstName: document.getElementById('firstName')?.value || '',
                 lastName: document.getElementById('lastName')?.value || '',
                 dateOfBirth: document.getElementById('dateOfBirth')?.value || '',
                 gender: document.getElementById('gender')?.value || '',
                 class: document.getElementById('class')?.value || '',
+                stream: document.getElementById('stream')?.value || '',
                 parentName: document.getElementById('parentName')?.value || '',
                 parentPhone: document.getElementById('parentPhone')?.value || '',
                 parentEmail: document.getElementById('parentEmail')?.value || '',
@@ -35,7 +36,7 @@ document.addEventListener('DOMContentLoaded', function () {
             const response = await fetch('http://localhost:3001/api/students', {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json',
+                    'Content-Type': 'application/json'
                 },
                 body: JSON.stringify(formData)
             });
@@ -44,15 +45,15 @@ document.addEventListener('DOMContentLoaded', function () {
             console.log('Server response:', result);
 
             if (response.ok) {
-                showSuccessMessage('Registration successful! Student admission number: ' + result.admissionNumber);
+                showSuccessMessage('Registration successful! Student registration number: ' + result.registrationNumber);
                 form.reset();
                 form.classList.remove('was-validated');
             } else {
                 if (response.status === 409) {
-                    // Duplicate admission number
+                    // Duplicate registration number
                     showErrorMessage(result.message);
-                    // Focus on admission number field for correction
-                    document.getElementById('admissionNumber').focus();
+                    // Focus on registration number field for correction
+                    document.getElementById('registrationNumber').focus();
                 } else if (result.missingFields) {
                     const missingFieldsList = result.missingFields.map(field => field.field).join(', ');
                     showErrorMessage(`Please fill in all required fields: ${missingFieldsList}`);
