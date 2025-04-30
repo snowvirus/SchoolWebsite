@@ -1,1 +1,315 @@
+<<<<<<< HEAD
  
+=======
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - St Francis Secondary School</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="/css/styles.css" rel="stylesheet">
+    <style>
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100vh;
+            width: 250px;
+            background-color: #1a237e;
+            padding-top: 20px;
+            color: white;
+        }
+        
+        .main-content {
+            margin-left: 250px;
+            padding: 20px;
+        }
+        
+        .sidebar-link {
+            color: white;
+            text-decoration: none;
+            padding: 10px 20px;
+            display: block;
+            transition: background-color 0.3s;
+        }
+        
+        .sidebar-link:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+        
+        .sidebar-link.active {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+        
+        .stats-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .stats-icon {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+        
+        .quick-action-card {
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        
+        .quick-action-card:hover {
+            transform: translateY(-5px);
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="text-center mb-4">
+            <img src="/images/bag.png" alt="School Logo" height="60" class="mb-2">
+            <h5>Admin Dashboard</h5>
+        </div>
+        <nav>
+            <a href="#dashboard" class="sidebar-link active" data-section="dashboard">
+                <i class="fas fa-home me-2"></i> Dashboard
+            </a>
+            <a href="#students" class="sidebar-link" data-section="students">
+                <i class="fas fa-user-graduate me-2"></i> Student Management
+            </a>
+            <a href="#teachers" class="sidebar-link" data-section="teachers">
+                <i class="fas fa-chalkboard-teacher me-2"></i> Staff Management
+            </a>
+            <a href="#attendance" class="sidebar-link" data-section="attendance">
+                <i class="fas fa-clipboard-check me-2"></i> Attendance
+            </a>
+            <a href="#academics" class="sidebar-link" data-section="academics">
+                <i class="fas fa-graduation-cap me-2"></i> Academic Records
+            </a>
+            <a href="#calendar" class="sidebar-link" data-section="calendar">
+                <i class="fas fa-calendar-alt me-2"></i> School Calendar
+            </a>
+            <a href="#announcements" class="sidebar-link" data-section="announcements">
+                <i class="fas fa-bullhorn me-2"></i> Announcements
+            </a>
+            <a href="#settings" class="sidebar-link" data-section="settings">
+                <i class="fas fa-cog me-2"></i> Settings
+            </a>
+            <a href="#" onclick="logout()" class="sidebar-link text-danger">
+                <i class="fas fa-sign-out-alt me-2"></i> Logout
+            </a>
+        </nav>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Dashboard Section -->
+        <div id="dashboard-section" class="content-section">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2>Dashboard Overview</h2>
+                <div class="d-flex gap-2">
+                    <button class="btn btn-outline-primary">
+                        <i class="fas fa-download me-2"></i>Download Report
+                    </button>
+                    <button class="btn btn-primary">
+                        <i class="fas fa-plus me-2"></i>New Entry
+                    </button>
+                </div>
+            </div>
+
+            <!-- Statistics Cards -->
+            <div class="row mb-4">
+                <div class="col-md-3">
+                    <div class="stats-card">
+                        <i class="fas fa-user-graduate stats-icon text-primary"></i>
+                        <h3 id="totalStudents">0</h3>
+                        <p class="text-muted mb-0">Total Students</p>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stats-card">
+                        <i class="fas fa-chalkboard-teacher stats-icon text-success"></i>
+                        <h3 id="activeTeachers">0</h3>
+                        <p class="text-muted mb-0">Active Teachers</p>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stats-card">
+                        <i class="fas fa-school stats-icon text-info"></i>
+                        <h3 id="totalClasses">0</h3>
+                        <p class="text-muted mb-0">Total Classes</p>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stats-card">
+                        <i class="fas fa-tasks stats-icon text-warning"></i>
+                        <h3 id="pendingTasks">0</h3>
+                        <p class="text-muted mb-0">Pending Tasks</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <h4 class="mb-3">Quick Actions</h4>
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <div class="card quick-action-card">
+                        <div class="card-body text-center">
+                            <i class="fas fa-user-plus mb-3 text-primary" style="font-size: 2rem;"></i>
+                            <h5>Add New Student</h5>
+                            <p class="text-muted">Register a new student in the system</p>
+                            <button class="btn btn-primary" onclick="showAddStudentModal()">Add Student</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <div class="card quick-action-card">
+                        <div class="card-body text-center">
+                            <i class="fas fa-clipboard-list mb-3 text-success" style="font-size: 2rem;"></i>
+                            <h5>Take Attendance</h5>
+                            <p class="text-muted">Mark today's attendance</p>
+                            <button class="btn btn-success" onclick="showAttendanceModal()">Take Attendance</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <div class="card quick-action-card">
+                        <div class="card-body text-center">
+                            <i class="fas fa-bullhorn mb-3 text-warning" style="font-size: 2rem;"></i>
+                            <h5>New Announcement</h5>
+                            <p class="text-muted">Create a new announcement</p>
+                            <button class="btn btn-warning" onclick="showAnnouncementModal()">Create</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Student Modal -->
+    <div class="modal fade" id="addStudentModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Add New Student</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="addStudentForm">
+                        <div class="mb-3">
+                            <label class="form-label">Full Name</label>
+                            <input type="text" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Admission Number</label>
+                            <input type="text" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Class</label>
+                            <select class="form-select" required>
+                                <option value="">Select Class</option>
+                                <option value="1">Form 1</option>
+                                <option value="2">Form 2</option>
+                                <option value="3">Form 3</option>
+                                <option value="4">Form 4</option>
+                            </select>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary">Add Student</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Check authentication
+        if (!localStorage.getItem('adminToken')) {
+            window.location.href = '/admin-login.html';
+        }
+
+        // Logout function
+        function logout() {
+            localStorage.removeItem('adminToken');
+            localStorage.removeItem('adminLoggedIn');
+            window.location.href = '/admin-login.html';
+        }
+
+        // Update statistics
+        async function updateStats() {
+            try {
+                const token = localStorage.getItem('adminToken');
+                if (!token) {
+                    logout();
+                    return;
+                }
+
+                const response = await fetch('/api/admin/stats', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (!response.ok) {
+                    if (response.status === 401) {
+                        logout();
+                        return;
+                    }
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const data = await response.json();
+                
+                // Update statistics
+                document.getElementById('totalStudents').textContent = data.totalStudents || 0;
+                document.getElementById('activeTeachers').textContent = data.activeTeachers || 0;
+                document.getElementById('totalClasses').textContent = data.totalClasses || 0;
+                document.getElementById('pendingTasks').textContent = data.pendingTasks || 0;
+            } catch (error) {
+                console.error('Error fetching stats:', error);
+            }
+        }
+
+        // Modal functions
+        function showAddStudentModal() {
+            new bootstrap.Modal(document.getElementById('addStudentModal')).show();
+        }
+
+        function showAttendanceModal() {
+            // Implement attendance modal
+        }
+
+        function showAnnouncementModal() {
+            // Implement announcement modal
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            updateStats();
+        });
+
+        // Handle sidebar navigation
+        document.querySelectorAll('.sidebar-link').forEach(link => {
+            link.addEventListener('click', function(e) {
+                if (this.getAttribute('onclick')) return; // Skip for logout button
+                
+                e.preventDefault();
+                document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
+                this.classList.add('active');
+                
+                const section = this.getAttribute('data-section');
+                // Implement section switching logic
+            });
+        });
+    </script>
+</body>
+</html> 
+>>>>>>> 403b044 (Updated files, removed unused HTML/CSS/JS, added src and logs directories)

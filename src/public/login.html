@@ -13,6 +13,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
+<<<<<<< HEAD
         }
         .login-container {
             background: white;
@@ -21,21 +22,70 @@
             box-shadow: 0 0 20px rgba(0,0,0,0.1);
             width: 100%;
             max-width: 400px;
+=======
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .login-container {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 2.5rem;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+            backdrop-filter: blur(10px);
+>>>>>>> 403b044 (Updated files, removed unused HTML/CSS/JS, added src and logs directories)
         }
         .login-header {
             text-align: center;
             margin-bottom: 2rem;
         }
         .login-header img {
+<<<<<<< HEAD
             width: 80px;
             margin-bottom: 1rem;
         }
         .form-control {
             padding: 0.75rem 1rem;
+=======
+            width: 100px;
+            height: 100px;
+            margin-bottom: 1rem;
+            border-radius: 50%;
+            padding: 0.5rem;
+            background: white;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        .login-header h2 {
+            color: #333;
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+        .login-header p {
+            color: #666;
+            font-size: 0.9rem;
+        }
+        .form-control {
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            margin-bottom: 1rem;
+            transition: all 0.3s ease;
+        }
+        .form-control:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+        }
+        .form-label {
+            color: #555;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+>>>>>>> 403b044 (Updated files, removed unused HTML/CSS/JS, added src and logs directories)
         }
         .btn-login {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             border: none;
+<<<<<<< HEAD
             padding: 0.75rem;
             font-weight: 600;
         }
@@ -57,6 +107,44 @@
         .user-type-btn.active {
             background: #667eea;
             color: white;
+=======
+            border-radius: 8px;
+            padding: 0.75rem;
+            font-weight: 600;
+            color: white;
+            width: 100%;
+            margin-top: 1rem;
+            transition: all 0.3s ease;
+        }
+        .btn-login:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        .error-message {
+            color: #dc3545;
+            margin-top: 1rem;
+            display: none;
+            padding: 0.75rem;
+            border-radius: 8px;
+            background: rgba(220, 53, 69, 0.1);
+            border: 1px solid rgba(220, 53, 69, 0.2);
+        }
+        .input-group {
+            position: relative;
+        }
+        .input-group-text {
+            position: absolute;
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: #666;
+            z-index: 10;
+        }
+        .form-control {
+            padding-left: 2.5rem;
+>>>>>>> 403b044 (Updated files, removed unused HTML/CSS/JS, added src and logs directories)
         }
     </style>
 </head>
@@ -65,6 +153,7 @@
         <div class="login-header">
             <img src="images/bag.png" alt="School Logo">
             <h2>School Portal</h2>
+<<<<<<< HEAD
             <p class="text-muted">Please login to continue</p>
         </div>
 
@@ -72,6 +161,9 @@
             <button class="user-type-btn active" data-role="student">Student</button>
             <button class="user-type-btn" data-role="parent">Parent</button>
             <button class="user-type-btn" data-role="admin">Admin</button>
+=======
+            <p class="text-muted">Welcome back! Please login to continue</p>
+>>>>>>> 403b044 (Updated files, removed unused HTML/CSS/JS, added src and logs directories)
         </div>
 
         <form id="loginForm">
@@ -79,13 +171,21 @@
                 <label for="username" class="form-label">Username</label>
                 <div class="input-group">
                     <span class="input-group-text"><i class="fas fa-user"></i></span>
+<<<<<<< HEAD
                     <input type="text" class="form-control" id="username" required>
                 </div>
             </div>
+=======
+                    <input type="text" class="form-control" id="username" placeholder="Enter your username" required>
+                </div>
+            </div>
+            
+>>>>>>> 403b044 (Updated files, removed unused HTML/CSS/JS, added src and logs directories)
             <div class="mb-3">
                 <label for="password" class="form-label">Password</label>
                 <div class="input-group">
                     <span class="input-group-text"><i class="fas fa-lock"></i></span>
+<<<<<<< HEAD
                     <input type="password" class="form-control" id="password" required>
                 </div>
             </div>
@@ -94,10 +194,33 @@
                 <label class="form-check-label" for="rememberMe">Remember me</label>
             </div>
             <button type="submit" class="btn btn-primary btn-login w-100">Login</button>
+=======
+                    <input type="password" class="form-control" id="password" placeholder="Enter your password" required>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label for="role" class="form-label">Role</label>
+                <div class="input-group">
+                    <span class="input-group-text"><i class="fas fa-user-tag"></i></span>
+                    <select class="form-control" id="role" required>
+                        <option value="admin">Admin</option>
+                        <option value="student">Student</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="error-message" id="errorMessage"></div>
+            
+            <button type="submit" class="btn btn-login">
+                <i class="fas fa-sign-in-alt me-2"></i>Login
+            </button>
+>>>>>>> 403b044 (Updated files, removed unused HTML/CSS/JS, added src and logs directories)
         </form>
     </div>
 
     <script>
+<<<<<<< HEAD
         document.addEventListener('DOMContentLoaded', () => {
             const userTypeBtns = document.querySelectorAll('.user-type-btn');
             const loginForm = document.getElementById('loginForm');
@@ -159,6 +282,45 @@
                     alert('An error occurred during login');
                 }
             });
+=======
+        document.getElementById('loginForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const role = document.getElementById('role').value;
+            const errorMessage = document.getElementById('errorMessage');
+            
+            try {
+                const response = await fetch('/api/auth/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ username, password, role })
+                });
+
+                const data = await response.json();
+                
+                if (response.ok) {
+                    localStorage.setItem('token', data.token);
+                    localStorage.setItem('user', JSON.stringify(data.user));
+                    
+                    if (role === 'admin') {
+                        window.location.href = '/index.html';
+                    } else if (role === 'student') {
+                        window.location.href = '/student/dashboard';
+                    }
+                } else {
+                    errorMessage.textContent = data.message || 'Login failed';
+                    errorMessage.style.display = 'block';
+                }
+            } catch (error) {
+                errorMessage.textContent = 'An error occurred. Please try again.';
+                errorMessage.style.display = 'block';
+                console.error('Login error:', error);
+            }
+>>>>>>> 403b044 (Updated files, removed unused HTML/CSS/JS, added src and logs directories)
         });
     </script>
 </body>

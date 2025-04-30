@@ -10,14 +10,20 @@ async function initDashboard() {
 
     if (!token || !user) {
         console.error('Auth token or user data not found. Redirecting to login.');
+<<<<<<< HEAD
         window.location.href = '/login.html'; // Use absolute path for login redirect
         return; // Stop script execution
+=======
+        window.location.href = '/login.html';
+        return;
+>>>>>>> 403b044 (Updated files, removed unused HTML/CSS/JS, added src and logs directories)
     }
     console.log('User authenticated, proceeding with dashboard init.');
 
     try {
         // Get user data from API
         const userData = await getUserData(token);
+<<<<<<< HEAD
         updateUserProfile(userData); // Update based on fetched data
 
         // --- Remove Mock Data Loading for Now ---
@@ -26,12 +32,22 @@ async function initDashboard() {
         // if(dashboardData.recentActivities) updateRecentActivities(dashboardData.recentActivities);
         // if(dashboardData.upcomingEvents) updateUpcomingEvents(dashboardData.upcomingEvents);
         clearPlaceholderData(); // Clear static placeholders
+=======
+        updateUserProfile(userData);
+
+        // Get student statistics
+        const stats = await getStudentStats(user.username);
+        updateDashboardStats(stats);
+>>>>>>> 403b044 (Updated files, removed unused HTML/CSS/JS, added src and logs directories)
 
         // Initialize event listeners
         initEventListeners();
     } catch (error) {
         console.error('Error initializing dashboard:', error);
+<<<<<<< HEAD
         // Display a user-friendly error message on the page
+=======
+>>>>>>> 403b044 (Updated files, removed unused HTML/CSS/JS, added src and logs directories)
         const welcomeSection = document.querySelector('.welcome-section h2');
         if (welcomeSection) {
             welcomeSection.textContent = 'Error loading dashboard.';
@@ -40,10 +56,13 @@ async function initDashboard() {
         if(dashboardContent) {
             dashboardContent.innerHTML += '<p class="text-danger text-center">Could not load dashboard data. Please try again later.</p>';
         }
+<<<<<<< HEAD
         // Optionally clear sensitive items and redirect
         // localStorage.removeItem('token');
         // localStorage.removeItem('user');
         // window.location.href = '../public/login.html';
+=======
+>>>>>>> 403b044 (Updated files, removed unused HTML/CSS/JS, added src and logs directories)
     }
 }
 
@@ -51,13 +70,18 @@ async function initDashboard() {
 async function getUserData(token) {
     console.log('Fetching student profile data...');
     try {
+<<<<<<< HEAD
         const response = await fetch('/api/profile/student', { // Use the correct API endpoint
+=======
+        const response = await fetch('/api/profile/student', {
+>>>>>>> 403b044 (Updated files, removed unused HTML/CSS/JS, added src and logs directories)
             headers: {
                 'Authorization': `Bearer ${token}`
             }
         });
 
         if (!response.ok) {
+<<<<<<< HEAD
             // If unauthorized (e.g., token expired), redirect to login
             if (response.status === 401 || response.status === 403) {
                  console.error('Unauthorized or Forbidden fetching profile. Redirecting...');
@@ -65,11 +89,20 @@ async function getUserData(token) {
                  localStorage.removeItem('user');
                  window.location.href = '/login.html'; // Use absolute path for login redirect
                  throw new Error('Redirecting due to auth error.'); // Stop further execution
+=======
+            if (response.status === 401 || response.status === 403) {
+                console.error('Unauthorized or Forbidden fetching profile. Redirecting...');
+                localStorage.removeItem('token');
+                localStorage.removeItem('user');
+                window.location.href = '/login.html';
+                throw new Error('Redirecting due to auth error.');
+>>>>>>> 403b044 (Updated files, removed unused HTML/CSS/JS, added src and logs directories)
             }
             throw new Error(`HTTP error! status: ${response.status}`);
         }
         
         const profileData = await response.json();
+<<<<<<< HEAD
 
         if (profileData.success && profileData.data) {
             console.log('Profile data fetched:', profileData.data);
@@ -92,10 +125,45 @@ function updateUserProfile(userData) {
     const userNameSpan = document.querySelector('.user-profile .username'); // Update the span in top-bar
 
     // Use firstName if available, otherwise fallback to registrationNumber
+=======
+        return profileData;
+    } catch (error) {
+        console.error('Error in getUserData:', error);
+        throw error;
+    }
+}
+
+// Fetch student statistics
+async function getStudentStats(admissionNumber) {
+    try {
+        const response = await fetch(`/api/students/${admissionNumber}/stats`, {
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('token')}`
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        return await response.json();
+    } catch (error) {
+        console.error('Error fetching student stats:', error);
+        throw error;
+    }
+}
+
+// Update user profile information
+function updateUserProfile(userData) {
+    const welcomeText = document.querySelector('.welcome-section h2');
+    const userNameSpan = document.querySelector('.user-profile .username');
+
+>>>>>>> 403b044 (Updated files, removed unused HTML/CSS/JS, added src and logs directories)
     const displayName = userData.firstName || userData.registrationNumber || 'Student';
     
     if(welcomeText) {
         welcomeText.textContent = `Welcome back, ${displayName}!`;
+<<<<<<< HEAD
     } else {
         console.warn('Welcome text element not found.');
     }
@@ -108,6 +176,81 @@ function updateUserProfile(userData) {
     // e.g., display class name: 
     // const classElement = document.getElementById('studentClass'); // Assuming an element with this ID exists
     // if(classElement && userData.className) classElement.textContent = userData.className;
+=======
+    }
+    if(userNameSpan) {
+        userNameSpan.textContent = displayName;
+    }
+}
+
+// Update dashboard statistics
+function updateDashboardStats(stats) {
+    // Update attendance rate
+    const attendanceElement = document.querySelector('[data-stat="attendance"]');
+    if (attendanceElement) {
+        attendanceElement.textContent = `${stats.attendanceRate}%`;
+    }
+
+    // Update other stats if needed
+    const assignmentsElement = document.querySelector('[data-stat="assignments"]');
+    if (assignmentsElement) {
+        assignmentsElement.textContent = stats.pendingAssignments || '0';
+    }
+
+    const booksElement = document.querySelector('[data-stat="books"]');
+    if (booksElement) {
+        booksElement.textContent = stats.booksBorrowed || '0';
+    }
+}
+
+// Initialize event listeners
+function initEventListeners() {
+    // Logout Button
+    const logoutButton = document.getElementById('logoutBtn');
+    if (logoutButton) {
+        logoutButton.addEventListener('click', (e) => {
+            e.preventDefault();
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            window.location.href = '/login.html';
+        });
+    }
+
+    // Search functionality
+    const searchInput = document.querySelector('.search-bar input');
+    if(searchInput) {
+        searchInput.addEventListener('input', debounce(handleSearch, 300));
+    }
+
+    // Notifications
+    const notifications = document.querySelector('.notifications');
+    if(notifications) {
+        notifications.addEventListener('click', handleNotifications);
+    }
+}
+
+function handleSearch(event) {
+    const searchTerm = event.target.value.trim();
+    if (searchTerm.length > 2) {
+        console.log('Searching for:', searchTerm);
+    }
+}
+
+function handleNotifications() {
+    console.log('Showing notifications');
+}
+
+function debounce(func, wait) {
+    let timeout;
+    return function executedFunction(...args) {
+        const later = () => {
+            clearTimeout(timeout);
+            func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+    };
+>>>>>>> 403b044 (Updated files, removed unused HTML/CSS/JS, added src and logs directories)
 }
 
 // --- Remove or Comment Out Mock Data Functions and Updaters ---

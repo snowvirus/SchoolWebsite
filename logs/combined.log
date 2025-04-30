@@ -1,0 +1,30 @@
+{"code":"ER_BAD_FIELD_ERROR","errno":1054,"level":"error","message":"Error in login: Unknown column 'role' in 'where clause'","sql":"SELECT * FROM users WHERE username = ? AND role = ?","sqlMessage":"Unknown column 'role' in 'where clause'","sqlState":"42S22","stack":"Error: Unknown column 'role' in 'where clause'\n    at PromisePool.execute (/home/snow/Desktop/SchoolWebsite/node_modules/mysql2/lib/promise/pool.js:54:22)\n    at /home/snow/Desktop/SchoolWebsite/src/routes/auth.js:19:36\n    at Layer.handle [as handle_request] (/home/snow/Desktop/SchoolWebsite/node_modules/express/lib/router/layer.js:95:5)\n    at next (/home/snow/Desktop/SchoolWebsite/node_modules/express/lib/router/route.js:149:13)\n    at Route.dispatch (/home/snow/Desktop/SchoolWebsite/node_modules/express/lib/router/route.js:119:3)\n    at Layer.handle [as handle_request] (/home/snow/Desktop/SchoolWebsite/node_modules/express/lib/router/layer.js:95:5)\n    at /home/snow/Desktop/SchoolWebsite/node_modules/express/lib/router/index.js:284:15\n    at Function.process_params (/home/snow/Desktop/SchoolWebsite/node_modules/express/lib/router/index.js:346:12)\n    at next (/home/snow/Desktop/SchoolWebsite/node_modules/express/lib/router/index.js:280:10)\n    at Function.handle (/home/snow/Desktop/SchoolWebsite/node_modules/express/lib/router/index.js:175:3)","timestamp":"2025-04-29T11:56:19.558Z"}
+{"code":"ER_BAD_FIELD_ERROR","errno":1054,"level":"error","message":"Error in login: Unknown column 'role' in 'where clause'","sql":"SELECT * FROM users WHERE username = ? AND role = ?","sqlMessage":"Unknown column 'role' in 'where clause'","sqlState":"42S22","stack":"Error: Unknown column 'role' in 'where clause'\n    at PromisePool.execute (/home/snow/Desktop/SchoolWebsite/node_modules/mysql2/lib/promise/pool.js:54:22)\n    at /home/snow/Desktop/SchoolWebsite/src/routes/auth.js:19:36\n    at Layer.handle [as handle_request] (/home/snow/Desktop/SchoolWebsite/node_modules/express/lib/router/layer.js:95:5)\n    at next (/home/snow/Desktop/SchoolWebsite/node_modules/express/lib/router/route.js:149:13)\n    at Route.dispatch (/home/snow/Desktop/SchoolWebsite/node_modules/express/lib/router/route.js:119:3)\n    at Layer.handle [as handle_request] (/home/snow/Desktop/SchoolWebsite/node_modules/express/lib/router/layer.js:95:5)\n    at /home/snow/Desktop/SchoolWebsite/node_modules/express/lib/router/index.js:284:15\n    at Function.process_params (/home/snow/Desktop/SchoolWebsite/node_modules/express/lib/router/index.js:346:12)\n    at next (/home/snow/Desktop/SchoolWebsite/node_modules/express/lib/router/index.js:280:10)\n    at Function.handle (/home/snow/Desktop/SchoolWebsite/node_modules/express/lib/router/index.js:175:3)","timestamp":"2025-04-29T12:00:08.701Z"}
+{"level":"info","message":"Login attempt:","role":"admin","timestamp":"2025-04-29T12:10:05.062Z","username":"admin"}
+{"level":"info","message":"Database query result:","timestamp":"2025-04-29T12:10:05.069Z","userCount":1}
+{"id":1,"level":"info","message":"Found user:","timestamp":"2025-04-29T12:10:05.069Z","user_type":"admin","username":"admin"}
+{"level":"info","message":"Password verification:","timestamp":"2025-04-29T12:10:05.149Z","valid":true}
+{"level":"info","message":"Generated token for user:","timestamp":"2025-04-29T12:10:05.151Z","username":"admin"}
+{"level":"info","message":"Login attempt:","role":"admin","timestamp":"2025-04-29T12:10:55.255Z","username":"admin"}
+{"level":"info","message":"Database query result:","timestamp":"2025-04-29T12:10:55.257Z","userCount":1}
+{"id":1,"level":"info","message":"Found user:","timestamp":"2025-04-29T12:10:55.257Z","user_type":"admin","username":"admin"}
+{"level":"info","message":"Password verification:","timestamp":"2025-04-29T12:10:55.336Z","valid":true}
+{"level":"info","message":"Generated token for user:","timestamp":"2025-04-29T12:10:55.337Z","username":"admin"}
+{"level":"info","message":"Login attempt:","role":"admin","timestamp":"2025-04-29T12:15:42.282Z","username":"admin"}
+{"level":"info","message":"Database query result:","timestamp":"2025-04-29T12:15:42.283Z","userCount":1}
+{"id":1,"level":"info","message":"Found user:","timestamp":"2025-04-29T12:15:42.283Z","user_type":"admin","username":"admin"}
+{"level":"info","message":"Password verification:","timestamp":"2025-04-29T12:15:42.359Z","valid":true}
+{"level":"info","message":"Generated token for user:","timestamp":"2025-04-29T12:15:42.360Z","username":"admin"}
+{"level":"info","message":"Login attempt:","role":"student","timestamp":"2025-04-29T12:17:08.976Z","username":"2025/001"}
+{"level":"info","message":"Database query result:","timestamp":"2025-04-29T12:17:08.977Z","userCount":0}
+{"level":"warn","message":"User not found:","role":"student","timestamp":"2025-04-29T12:17:08.978Z","username":"2025/001"}
+{"level":"info","message":"Login attempt:","role":"admin","timestamp":"2025-04-29T12:19:18.729Z","username":"admin"}
+{"level":"info","message":"Database query result:","timestamp":"2025-04-29T12:19:18.731Z","userCount":1}
+{"id":1,"level":"info","message":"Found user:","timestamp":"2025-04-29T12:19:18.731Z","user_type":"admin","username":"admin"}
+{"level":"info","message":"Password verification:","timestamp":"2025-04-29T12:19:18.801Z","valid":true}
+{"level":"info","message":"Generated token for user:","timestamp":"2025-04-29T12:19:18.801Z","username":"admin"}
+{"level":"info","message":"Login attempt:","role":"admin","timestamp":"2025-04-29T12:19:33.594Z","username":"admin"}
+{"level":"info","message":"Database query result:","timestamp":"2025-04-29T12:19:33.596Z","userCount":1}
+{"id":1,"level":"info","message":"Found user:","timestamp":"2025-04-29T12:19:33.596Z","user_type":"admin","username":"admin"}
+{"level":"info","message":"Password verification:","timestamp":"2025-04-29T12:19:33.680Z","valid":true}
+{"level":"info","message":"Generated token for user:","timestamp":"2025-04-29T12:19:33.681Z","username":"admin"}

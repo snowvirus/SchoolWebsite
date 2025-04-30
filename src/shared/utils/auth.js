@@ -74,7 +74,18 @@ const login = async (username, password, role) => {
         localStorage.setItem('user', JSON.stringify(data.user));
         
         // Redirect based on role
+<<<<<<< HEAD
         const redirectPath = role === 'student' ? '/student/dashboard' : '/parent/dashboard';
+=======
+        let redirectPath;
+        if (role === 'student') {
+            redirectPath = '/student/dashboard.html';
+        } else if (role === 'admin') {
+            redirectPath = '/admin/dashboard.html';
+        } else {
+            redirectPath = '/parent/dashboard.html';
+        }
+>>>>>>> 403b044 (Updated files, removed unused HTML/CSS/JS, added src and logs directories)
         window.location.href = redirectPath;
     } catch (error) {
         showError(error.message);

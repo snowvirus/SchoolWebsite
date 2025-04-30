@@ -8,10 +8,21 @@ const path = require('path');
 const PDFDocument = require('pdfkit');
 const fs = require('fs');
 const { initializeDatabase } = require('./src/database/initDatabase');
+<<<<<<< HEAD
 const studentRoutes = require('./src/routes/studentRoutes');
+=======
+const studentRoutes = require('./src/routes/students');
+const adminRoutes = require('./src/routes/admin');
+const authRoutes = require('./src/routes/auth');
+const teacherRoutes = require('./src/routes/teacher');
+const logger = require('./src/utils/logger');
+>>>>>>> 403b044 (Updated files, removed unused HTML/CSS/JS, added src and logs directories)
 
 const app = express();
 const PORT = process.env.PORT || 3001;
+
+// Database pool (will be initialized in startServer)
+let pool;
 
 // Debug: Log environment variables (except password)
 console.log('Environment variables loaded:');
@@ -25,12 +36,150 @@ console.log('JWT_SECRET:', process.env.JWT_SECRET ? 'Set' : 'Not set');
 app.use(cors());
 app.use(express.json());
 
+<<<<<<< HEAD
 // Redirect root to login page FIRST
+=======
+// Authentication middleware
+const authenticateToken = (req, res, next) => {
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1];
+
+    if (!token) {
+        return res.status(401).json({ message: 'Access denied. No token provided.' });
+    }
+
+    jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
+        if (err) {
+            return res.status(403).json({ message: 'Invalid token' });
+        }
+        req.user = user;
+        next();
+    });
+};
+
+// Public routes
+app.use('/api/auth', authRoutes);
+
+// Protected routes
+app.use('/api/admin', authenticateToken, adminRoutes);
+app.use('/api/teacher', authenticateToken, teacherRoutes);
+app.use('/api/student', authenticateToken, studentRoutes);
+
+// Mount routes with pool
+app.use('/api/students', (req, res, next) => {
+    req.pool = pool;
+    next();
+}, studentRoutes);
+
+// Get student registration card
+app.get('/api/students/:admissionNumber/registration-card', async (req, res) => {
+    try {
+        const { admissionNumber } = req.params;
+        console.log('=== Registration Card Request ===');
+        console.log('Admission Number:', admissionNumber);
+
+        // Get student details with class and stream information
+        const query = `
+            SELECT s.*, c.name as class_name, st.name as stream_name
+            FROM students s
+            LEFT JOIN classes c ON s.class_id = c.id
+            LEFT JOIN streams st ON s.stream_id = st.id
+            WHERE s.admissionNumber = ?
+        `;
+        console.log('Executing query:', query);
+        console.log('With parameters:', [admissionNumber]);
+
+        const [rows] = await pool.execute(query, [admissionNumber]);
+        console.log('Query results:', JSON.stringify(rows, null, 2));
+
+        if (rows.length === 0) {
+            console.log('No student found');
+            return res.status(404).json({
+                success: false,
+                message: 'Student not found'
+            });
+        }
+
+        const student = rows[0];
+        console.log('Found student:', JSON.stringify(student, null, 2));
+
+        // Get clearance records
+        const clearanceQuery = `
+            SELECT * FROM clearance_records 
+            WHERE student_id = ? AND academic_year = YEAR(CURRENT_DATE)
+        `;
+        const [clearanceRows] = await pool.execute(clearanceQuery, [student.id]);
+        console.log('Clearance records:', JSON.stringify(clearanceRows, null, 2));
+
+        const clearance = clearanceRows[0] || {
+            library_cleared: false,
+            accounts_cleared: false,
+            sports_cleared: false,
+            lab_cleared: false,
+            hostel_cleared: false
+        };
+
+        // Format the response
+        const response = {
+            success: true,
+            data: {
+                student: {
+                    admissionNumber: student.admissionNumber,
+                    firstName: student.firstName,
+                    lastName: student.lastName,
+                    dateOfBirth: student.dateOfBirth,
+                    gender: student.gender,
+                    class: student.class_name || `Form ${student.class_id}`,
+                    stream: student.stream_name || `Stream ${student.stream_id}`,
+                    parentName: student.parentName,
+                    parentPhone: student.parentPhone,
+                    parentEmail: student.parentEmail,
+                    address: student.address,
+                    previousSchool: student.previousSchool,
+                    lastGrade: student.lastGrade,
+                    academicYear: new Date().getFullYear(),
+                    issueDate: new Date().toISOString(),
+                    clearance: {
+                        library: clearance.library_cleared,
+                        accounts: clearance.accounts_cleared,
+                        sports: clearance.sports_cleared,
+                        lab: clearance.lab_cleared,
+                        hostel: clearance.hostel_cleared
+                    }
+                }
+            }
+        };
+
+        console.log('Sending response:', JSON.stringify(response, null, 2));
+        res.json(response);
+    } catch (error) {
+        console.error('=== Error in Registration Card ===');
+        console.error('Error details:', {
+            message: error.message,
+            code: error.code,
+            errno: error.errno,
+            sqlMessage: error.sqlMessage,
+            sqlState: error.sqlState,
+            stack: error.stack
+        });
+        res.status(500).json({
+            success: false,
+            message: 'Error fetching student data: ' + error.message
+        });
+    }
+});
+
+// Redirect root to login page
+>>>>>>> 403b044 (Updated files, removed unused HTML/CSS/JS, added src and logs directories)
 app.get('/', (req, res) => {
     res.redirect('/login.html');
 });
 
+<<<<<<< HEAD
 // Serve static files from the public directory AFTER checking root redirect
+=======
+// Serve static files from the public directory
+>>>>>>> 403b044 (Updated files, removed unused HTML/CSS/JS, added src and logs directories)
 app.use(express.static(path.join(__dirname, 'src/public')));
 
 // Serve static files from src/shared for dashboard styles/utils
@@ -39,6 +188,7 @@ app.use('/shared', express.static(path.join(__dirname, 'src/shared')));
 // Serve student-specific JS file
 app.use('/student', express.static(path.join(__dirname, 'src/student')));
 
+<<<<<<< HEAD
 // Authentication middleware
 const authenticateToken = (req, res, next) => {
     // Define public routes/patterns that bypass ALL checks in this middleware
@@ -88,6 +238,8 @@ const authenticateToken = (req, res, next) => {
 // Protect all routes except public ones
 app.use(authenticateToken);
 
+=======
+>>>>>>> 403b044 (Updated files, removed unused HTML/CSS/JS, added src and logs directories)
 // Serve other pages
 app.get('/admin', (req, res) => {
     res.sendFile(path.join(__dirname, 'src/public', 'admin.html'));
@@ -102,13 +254,21 @@ app.get('/index', (req, res) => {
 });
 
 // Serve Student Dashboard (Existing file)
+<<<<<<< HEAD
 app.get('/student/dashboard', (req, res) => {
+=======
+app.get('/student/dashboard.html', (req, res) => {
+>>>>>>> 403b044 (Updated files, removed unused HTML/CSS/JS, added src and logs directories)
     // This route is protected by authenticateToken middleware already
     res.sendFile(path.join(__dirname, 'src/student', 'dashboard.html'));
 });
 
 // Serve Admin Dashboard (Existing file)
+<<<<<<< HEAD
 app.get('/admin/dashboard', (req, res) => {
+=======
+app.get('/admin/dashboard.html', (req, res) => {
+>>>>>>> 403b044 (Updated files, removed unused HTML/CSS/JS, added src and logs directories)
     // Protected by authenticateToken
     res.sendFile(path.join(__dirname, 'src/admin', 'dashboard.html')); 
 });
@@ -116,18 +276,31 @@ app.get('/admin/dashboard', (req, res) => {
 // Add routes for other student pages
 const studentPages = ['academic', 'attendance', 'assignments', 'library', 'messages', 'profile'];
 studentPages.forEach(page => {
+<<<<<<< HEAD
     app.get(`/student/${page}`, (req, res) => {
+=======
+    app.get(`/student/${page}.html`, (req, res) => {
+>>>>>>> 403b044 (Updated files, removed unused HTML/CSS/JS, added src and logs directories)
         // Protected by authenticateToken
         res.sendFile(path.join(__dirname, 'src/student', `${page}.html`));
     });
 });
 
+<<<<<<< HEAD
 // Database configuration (without password)
 const dbConfig = {
     host: process.env.DB_HOST,
     user: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME,
+=======
+// Database configuration
+const dbConfig = {
+    host: 'localhost',
+    user: 'root',
+    password: 'Security@12',
+    database: 'school_management',
+>>>>>>> 403b044 (Updated files, removed unused HTML/CSS/JS, added src and logs directories)
     waitForConnections: true,
     connectionLimit: 10,
     queueLimit: 0
@@ -147,6 +320,7 @@ if (!fs.existsSync(uploadsDir)) {
     fs.mkdirSync(uploadsDir, { recursive: true });
 }
 
+<<<<<<< HEAD
 // Database connection
 const pool = mysql.createPool(dbConfig);
 
@@ -161,6 +335,38 @@ async function startServer() {
         // Initialize database tables
         await initializeDatabase(pool);
         console.log('Database tables initialized successfully');
+=======
+// Initialize database and start server
+async function startServer() {
+    try {
+        // Create pool with database specified
+        pool = mysql.createPool(dbConfig);
+
+        // Test database connection
+        const connection = await pool.getConnection();
+        console.log('Successfully connected to the database');
+        
+        // Test a simple query
+        const [testRows] = await connection.execute('SELECT 1 as test');
+        console.log('Test query result:', testRows);
+        
+        // Test students table
+        const [studentRows] = await connection.execute('SELECT * FROM students WHERE admissionNumber = ?', ['2025/001']);
+        console.log('Student test query result:', JSON.stringify(studentRows, null, 2));
+        
+        connection.release();
+        console.log('Released test connection');
+
+        // Mount routes with pool
+        app.use('/api/students', (req, res, next) => {
+            req.pool = pool;
+            next();
+        }, studentRoutes);
+        app.use('/api/admin', (req, res, next) => {
+            req.pool = pool;
+            next();
+        }, adminRoutes);
+>>>>>>> 403b044 (Updated files, removed unused HTML/CSS/JS, added src and logs directories)
 
         // Start the server
         app.listen(PORT, () => {
@@ -169,6 +375,16 @@ async function startServer() {
         });
     } catch (err) {
         console.error('Error starting server:', err);
+<<<<<<< HEAD
+=======
+        console.error('Error details:', {
+            message: err.message,
+            code: err.code,
+            errno: err.errno,
+            sqlMessage: err.sqlMessage,
+            sqlState: err.sqlState
+        });
+>>>>>>> 403b044 (Updated files, removed unused HTML/CSS/JS, added src and logs directories)
         process.exit(1);
     }
 }
@@ -181,6 +397,7 @@ const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
 
 // API Routes
 
+<<<<<<< HEAD
 // Admin Login
 app.post('/api/auth/login', async (req, res) => {
     try {
@@ -240,6 +457,96 @@ app.post('/api/auth/login', async (req, res) => {
                 roleId: user.role_id // Include role_id in the response
             }
         });
+=======
+// Login endpoint
+app.post('/api/auth/login', async (req, res) => {
+    try {
+        const { username, password, role } = req.body;
+        console.log('Login attempt for username:', username, 'role:', role);
+
+        if (role === 'student') {
+            // Check students table
+            const [studentRows] = await pool.execute(
+                'SELECT * FROM students WHERE admissionNumber = ?',
+                [username]
+            );
+
+            if (studentRows.length === 0) {
+                console.log('Student not found:', username);
+                return res.status(401).json({ message: 'Invalid admission number' });
+            }
+
+            const student = studentRows[0];
+            // For students, we'll use their admission number as password initially
+            if (password !== student.admissionNumber) {
+                console.log('Invalid password for student:', username);
+                return res.status(401).json({ message: 'Invalid password' });
+            }
+
+            const token = jwt.sign(
+                { 
+                    id: student.id, 
+                    username: student.admissionNumber, 
+                    role: 'student',
+                    roleId: 3 // Student role ID
+                },
+                JWT_SECRET,
+                { expiresIn: '24h' }
+            );
+
+            return res.json({ 
+                token, 
+                user: { 
+                    id: student.id, 
+                    username: student.admissionNumber, 
+                    role: 'student',
+                    roleId: 3,
+                    firstName: student.firstName,
+                    lastName: student.lastName,
+                    class: student.class_id,
+                    stream: student.stream_id
+                } 
+            });
+        }
+
+        // Admin login logic
+        if (role === 'admin') {
+            const [adminRows] = await pool.execute(
+                'SELECT * FROM admin_users WHERE username = ?',
+                [username]
+            );
+
+            if (adminRows.length > 0) {
+                const admin = adminRows[0];
+                const validPassword = await bcrypt.compare(password, admin.password);
+                
+                if (validPassword) {
+                    const token = jwt.sign(
+                        { 
+                            id: admin.id, 
+                            username: admin.username, 
+                            role: 'admin',
+                            roleId: 1 // Admin role ID
+                        },
+                        JWT_SECRET,
+                        { expiresIn: '24h' }
+                    );
+                    return res.json({ 
+                        token, 
+                        user: { 
+                            id: admin.id, 
+                            username: admin.username, 
+                            role: 'admin',
+                            roleId: 1
+                        } 
+                    });
+                }
+            }
+        }
+
+        // If not found or invalid credentials
+        return res.status(401).json({ message: 'Invalid credentials' });
+>>>>>>> 403b044 (Updated files, removed unused HTML/CSS/JS, added src and logs directories)
     } catch (error) {
         console.error('Login error:', error);
         res.status(500).json({ message: 'Server error during login' });
@@ -255,12 +562,6 @@ app.get('/api/stats', authenticateToken, async (req, res) => {
         const [studentCount] = await pool.execute('SELECT COUNT(*) as count FROM students');
         console.log('Student count:', studentCount[0].count);
 
-        // Get active teachers
-        const [teacherCount] = await pool.execute(
-            'SELECT COUNT(*) as count FROM teachers WHERE status = "Active"'
-        );
-        console.log('Teacher count:', teacherCount[0].count);
-
         // Get total classes
         const [classCount] = await pool.execute('SELECT COUNT(*) as count FROM classes');
         console.log('Class count:', classCount[0].count);
@@ -269,7 +570,7 @@ app.get('/api/stats', authenticateToken, async (req, res) => {
         const [absentToday] = await pool.execute(`
             SELECT COUNT(*) as count 
             FROM attendance 
-            WHERE date = CURDATE() AND status = 'Absent'
+            WHERE date = CURDATE() AND status = 'absent'
         `);
         console.log('Absent today:', absentToday[0].count);
 
@@ -288,13 +589,14 @@ app.get('/api/stats', authenticateToken, async (req, res) => {
 
         res.json({
             totalStudents: studentCount[0].count || 0,
-            activeTeachers: teacherCount[0].count || 0,
+            activeTeachers: 0, // We'll implement this when we add the teachers table
             totalClasses: classCount[0].count || 0,
             pendingTasks: pendingTasks || 0
         });
     } catch (error) {
         console.error('Stats error:', error);
         res.status(500).json({
+            success: false,
             message: 'Error fetching statistics',
             error: process.env.NODE_ENV === 'development' ? error.message : undefined
         });
@@ -312,12 +614,41 @@ app.get('/api/students', async (req, res) => {
             });
         }
 
-        const [rows] = await pool.execute(
-            'SELECT * FROM students WHERE class = ? AND stream = ?',
-            [classValue, stream]
+        // First get the class ID
+        const [classRows] = await pool.execute(
+            'SELECT id FROM classes WHERE name = ?',
+            [classValue]
         );
 
-        res.json(rows);
+        if (classRows.length === 0) {
+            return res.status(404).json({
+                error: 'Class not found'
+            });
+        }
+
+        const classId = classRows[0].id;
+
+        // Then get the stream ID
+        const [streamRows] = await pool.execute(
+            'SELECT id FROM streams WHERE class_id = ? AND name = ?',
+            [classId, stream]
+        );
+
+        if (streamRows.length === 0) {
+            return res.status(404).json({
+                error: 'Stream not found for this class'
+            });
+        }
+
+        const streamId = streamRows[0].id;
+
+        // Finally get the students
+        const [students] = await pool.execute(
+            'SELECT * FROM students WHERE class_id = ? AND stream_id = ?',
+            [classId, streamId]
+        );
+
+        res.json(students);
     } catch (error) {
         console.error('Error fetching students:', error);
         res.status(500).json({
@@ -328,6 +659,7 @@ app.get('/api/students', async (req, res) => {
 });
 
 // Get student by registration number
+<<<<<<< HEAD
 app.get('/api/students/:registrationNumber', async (req, res) => {
     try {
         const { registrationNumber } = req.params;
@@ -378,14 +710,23 @@ app.get('/api/students/:registrationNumber', async (req, res) => {
 
 // Get Student Grades
 app.get('/api/grades/:registrationNumber', async (req, res) => {
+=======
+app.get('/api/grades/:admissionNumber', async (req, res) => {
+>>>>>>> 403b044 (Updated files, removed unused HTML/CSS/JS, added src and logs directories)
     try {
         const { registrationNumber } = req.params;
         const { term, year } = req.query;
+        console.log('Fetching grades for:', { admissionNumber, term, year });
 
         // First get the student ID
         const [student] = await pool.execute(
+<<<<<<< HEAD
             'SELECT id FROM students WHERE registration_number = ?',
             [registrationNumber]
+=======
+            'SELECT id FROM students WHERE admissionNumber = ?',
+            [admissionNumber]
+>>>>>>> 403b044 (Updated files, removed unused HTML/CSS/JS, added src and logs directories)
         );
 
         if (student.length === 0) {
@@ -403,9 +744,33 @@ app.get('/api/grades/:registrationNumber', async (req, res) => {
             WHERE g.student_id = ? AND g.term = ? AND g.year = ?
         `, [student[0].id, term, year]);
 
+<<<<<<< HEAD
         res.json({
             success: true,
             data: grades
+=======
+        // Get student details
+        const [studentDetails] = await pool.execute(`
+            SELECT s.*, c.name as class_name, st.name as stream_name
+            FROM students s
+            LEFT JOIN classes c ON s.class_id = c.id
+            LEFT JOIN streams st ON s.stream_id = st.id
+            WHERE s.id = ?
+        `, [student[0].id]);
+
+        res.json({
+            success: true,
+            data: {
+                student: {
+                    admissionNumber: studentDetails[0].admissionNumber,
+                    firstName: studentDetails[0].firstName,
+                    lastName: studentDetails[0].lastName,
+                    class: studentDetails[0].class_name,
+                    stream: studentDetails[0].stream_name
+                },
+                grades: grades
+            }
+>>>>>>> 403b044 (Updated files, removed unused HTML/CSS/JS, added src and logs directories)
         });
     } catch (error) {
         console.error('Error fetching grades:', error);
@@ -418,12 +783,26 @@ app.get('/api/grades/:registrationNumber', async (req, res) => {
 });
 
 // Student Registration
-app.post('/api/students', async (req, res) => {
+app.post('/api/students/register', async (req, res) => {
+    console.log('Registration request received:', req.body);
     try {
-        const studentData = req.body;
-        console.log('Received registration data:', studentData);
+        const {
+            firstName,
+            lastName,
+            dateOfBirth,
+            gender,
+            class: classValue,
+            stream,
+            parentName,
+            parentPhone,
+            parentEmail,
+            address,
+            previousSchool,
+            lastGrade
+        } = req.body;
 
         // Validate required fields
+<<<<<<< HEAD
         const requiredFields = [
             'registrationNumber', 'firstName', 'lastName', 'dateOfBirth',
             'gender', 'class', 'stream', 'parentName', 'parentPhone'
@@ -527,29 +906,146 @@ app.post('/api/students', async (req, res) => {
         } finally {
             connection.release();
         }
+=======
+        if (!firstName || !lastName || !dateOfBirth || !gender || !classValue || !stream) {
+            console.log('Missing required fields:', { firstName, lastName, dateOfBirth, gender, class: classValue, stream });
+            return res.status(400).json({ error: 'All fields are required' });
+        }
+
+        // Generate admission number (year/sequence)
+        const currentYear = new Date().getFullYear();
+        const [countResult] = await pool.query(
+            'SELECT COUNT(*) as count FROM students WHERE YEAR(created_at) = ?',
+            [currentYear]
+        );
+        const sequence = (countResult[0].count + 1).toString().padStart(3, '0');
+        const admissionNumber = `${currentYear}/${sequence}`;
+
+        console.log('Generated admission number:', admissionNumber);
+
+        // Check if class exists
+        const [classStreamResult] = await pool.query(
+            'SELECT id FROM classes WHERE id = ?',
+            [classValue]
+        );
+
+        if (classStreamResult.length === 0) {
+            console.log('Invalid class:', { class: classValue });
+            return res.status(400).json({ error: 'Invalid class selected' });
+        }
+
+        // Get stream ID based on class and stream name
+        const [streamResult] = await pool.query(
+            'SELECT id FROM streams WHERE class_id = ? AND name = ?',
+            [classValue, stream]
+        );
+
+        if (streamResult.length === 0) {
+            console.log('Invalid stream for class:', { class: classValue, stream });
+            return res.status(400).json({ error: 'Invalid stream for selected class' });
+        }
+
+        const streamId = streamResult[0].id;
+
+        // Insert student record
+        const [result] = await pool.query(
+            `INSERT INTO students (
+                admissionNumber, firstName, lastName, dateOfBirth, gender,
+                class_id, stream_id, parentName, parentPhone, parentEmail,
+                address, previousSchool, lastGrade
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+            [
+                admissionNumber, firstName, lastName, dateOfBirth, gender,
+                classValue, streamId, parentName, parentPhone, parentEmail,
+                address, previousSchool, lastGrade
+            ]
+        );
+
+        console.log('Student registered successfully:', { id: result.insertId, admissionNumber });
+
+        // Get the student's class and stream names
+        const [studentData] = await pool.query(`
+            SELECT s.*, c.name as class_name, st.name as stream_name
+            FROM students s
+            LEFT JOIN classes c ON s.class_id = c.id
+            LEFT JOIN streams st ON s.stream_id = st.id
+            WHERE s.id = ?
+        `, [result.insertId]);
+
+        const student = studentData[0];
+
+        res.status(201).json({
+            success: true,
+            message: 'Student registered successfully',
+            data: {
+                student: {
+                    admissionNumber: student.admissionNumber,
+                    firstName: student.firstName,
+                    lastName: student.lastName,
+                    dateOfBirth: student.dateOfBirth,
+                    gender: student.gender,
+                    class: student.class_name,
+                    stream: student.stream_name,
+                    parentName: student.parentName,
+                    parentPhone: student.parentPhone,
+                    parentEmail: student.parentEmail,
+                    address: student.address,
+                    previousSchool: student.previousSchool,
+                    lastGrade: student.lastGrade
+                }
+            }
+        });
+>>>>>>> 403b044 (Updated files, removed unused HTML/CSS/JS, added src and logs directories)
     } catch (error) {
         console.error('Registration error:', error);
-
-        // Handle specific MySQL errors
         if (error.code === 'ER_DUP_ENTRY') {
+<<<<<<< HEAD
             return res.status(409).json({
                 success: false,
                 message: `Student with registration number ${req.body.registrationNumber} already exists. Please use a different registration number.`
             });
+=======
+            return res.status(400).json({ error: 'Student with this information already exists' });
+>>>>>>> 403b044 (Updated files, removed unused HTML/CSS/JS, added src and logs directories)
         }
-
-        res.status(500).json({
-            success: false,
-            message: 'Error registering student',
-            error: process.env.NODE_ENV === 'development' ? error.message : undefined
-        });
+        if (error.code === 'ER_NO_REFERENCED_ROW') {
+            return res.status(400).json({ error: 'Invalid class or stream selected' });
+        }
+        res.status(500).json({ error: 'Error registering student' });
     }
 });
 
 // Save Attendance
-app.post('/api/attendance', authenticateToken, async (req, res) => {
+app.post('/api/attendance', async (req, res) => {
     try {
         const { date, class: className, stream, attendance } = req.body;
+
+        // Get class and stream IDs
+        const [classRows] = await pool.execute(
+            'SELECT id FROM classes WHERE name = ?',
+            [className]
+        );
+
+        if (classRows.length === 0) {
+            return res.status(404).json({
+                error: 'Class not found'
+            });
+        }
+
+        const classId = classRows[0].id;
+
+        const [streamRows] = await pool.execute(
+            'SELECT id FROM streams WHERE class_id = ? AND name = ?',
+            [classId, stream]
+        );
+
+        if (streamRows.length === 0) {
+            return res.status(404).json({
+                error: 'Stream not found for this class'
+            });
+        }
+
+        const streamId = streamRows[0].id;
 
         // Insert attendance records
         for (const record of attendance) {
@@ -558,15 +1054,19 @@ app.post('/api/attendance', authenticateToken, async (req, res) => {
                 (student_id, date, status, remarks) 
                 SELECT id, ?, ?, ? 
                 FROM students 
-                WHERE admission_number = ? AND class = ? AND stream = ?`,
-                [date, record.status, record.remarks, record.admissionNumber, className, stream]
+                WHERE admissionNumber = ? AND class_id = ? AND stream_id = ?`,
+                [date, record.status, record.remarks, record.admissionNumber, classId, streamId]
             );
         }
 
         res.json({ success: true, message: 'Attendance saved successfully' });
     } catch (error) {
         console.error('Attendance error:', error);
-        res.status(500).json({ message: 'Error saving attendance' });
+        res.status(500).json({ 
+            success: false,
+            message: 'Error saving attendance',
+            error: process.env.NODE_ENV === 'development' ? error.message : undefined
+        });
     }
 });
 
@@ -855,6 +1355,7 @@ app.delete('/api/calendar-events/:id', authenticateToken, async (req, res) => {
     }
 });
 
+<<<<<<< HEAD
 // Register routes
 app.use('/api/students', studentRoutes);
 
@@ -866,4 +1367,401 @@ app.use((err, req, res, next) => {
         message: 'Internal server error',
         error: process.env.NODE_ENV === 'development' ? err.message : 'An error occurred'
     });
+=======
+// Test endpoint to verify database connection and student data
+app.get('/api/test/student/:admissionNumber', async (req, res) => {
+    try {
+        const { admissionNumber } = req.params;
+        console.log('Testing database connection and student data for:', admissionNumber);
+
+        // Test database connection
+        const connection = await pool.getConnection();
+        console.log('Database connection successful');
+        connection.release();
+
+        // Check if student exists
+        const [studentRows] = await pool.execute(
+            'SELECT * FROM students WHERE admissionNumber = ?',
+            [admissionNumber]
+        );
+        console.log('Student query results:', studentRows);
+
+        // Check classes table
+        const [classRows] = await pool.execute('SELECT * FROM classes');
+        console.log('Classes in database:', classRows);
+
+        // Check streams table
+        const [streamRows] = await pool.execute('SELECT * FROM streams');
+        console.log('Streams in database:', streamRows);
+
+        res.json({
+            success: true,
+            studentExists: studentRows.length > 0,
+            studentData: studentRows[0] || null,
+            classes: classRows,
+            streams: streamRows
+        });
+    } catch (error) {
+        console.error('Test endpoint error:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error testing database connection',
+            error: process.env.NODE_ENV === 'development' ? error.message : undefined
+        });
+    }
+});
+
+// Test endpoint to verify database structure
+app.get('/api/test/db-structure', async (req, res) => {
+    let connection;
+    try {
+        connection = await pool.getConnection();
+        console.log('Got database connection for structure test');
+
+        // Check students table
+        const [studentColumns] = await connection.execute('SHOW COLUMNS FROM students');
+        console.log('Students table columns:', JSON.stringify(studentColumns, null, 2));
+
+        // Check classes table
+        const [classColumns] = await connection.execute('SHOW COLUMNS FROM classes');
+        console.log('Classes table columns:', JSON.stringify(classColumns, null, 2));
+
+        // Check streams table
+        const [streamColumns] = await connection.execute('SHOW COLUMNS FROM streams');
+        console.log('Streams table columns:', JSON.stringify(streamColumns, null, 2));
+
+        // Check clearance_records table
+        const [clearanceColumns] = await connection.execute('SHOW COLUMNS FROM clearance_records');
+        console.log('Clearance records table columns:', JSON.stringify(clearanceColumns, null, 2));
+
+        res.json({
+            success: true,
+            tables: {
+                students: studentColumns,
+                classes: classColumns,
+                streams: streamColumns,
+                clearance_records: clearanceColumns
+            }
+        });
+    } catch (error) {
+        console.error('Error checking database structure:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error checking database structure',
+            error: process.env.NODE_ENV === 'development' ? error.message : undefined
+        });
+    } finally {
+        if (connection) {
+            connection.release();
+            console.log('Released database connection');
+        }
+    }
+});
+
+// Save clearance status
+app.post('/api/students/:admissionNumber/clearance', async (req, res) => {
+    try {
+        const { admissionNumber } = req.params;
+        const { library, accounts, sports, lab, hostel } = req.body;
+
+        // Get student ID
+        const [studentRows] = await pool.execute(
+            'SELECT id FROM students WHERE admissionNumber = ?',
+            [admissionNumber]
+        );
+
+        if (studentRows.length === 0) {
+            return res.status(404).json({
+                success: false,
+                message: 'Student not found'
+            });
+        }
+
+        const studentId = studentRows[0].id;
+        const currentYear = new Date().getFullYear();
+
+        // Check if clearance record exists
+        const [clearanceRows] = await pool.execute(
+            'SELECT id FROM clearance_records WHERE student_id = ? AND academic_year = ?',
+            [studentId, currentYear]
+        );
+
+        if (clearanceRows.length > 0) {
+            // Update existing record
+            await pool.execute(
+                `UPDATE clearance_records 
+                SET library_cleared = ?, accounts_cleared = ?, sports_cleared = ?, 
+                    lab_cleared = ?, hostel_cleared = ?, updated_at = NOW()
+                WHERE student_id = ? AND academic_year = ?`,
+                [library, accounts, sports, lab, hostel, studentId, currentYear]
+            );
+        } else {
+            // Insert new record
+            await pool.execute(
+                `INSERT INTO clearance_records 
+                (student_id, academic_year, library_cleared, accounts_cleared, 
+                sports_cleared, lab_cleared, hostel_cleared, created_at)
+                VALUES (?, ?, ?, ?, ?, ?, ?, NOW())`,
+                [studentId, currentYear, library, accounts, sports, lab, hostel]
+            );
+        }
+
+        res.json({
+            success: true,
+            message: 'Clearance status saved successfully'
+        });
+    } catch (error) {
+        console.error('Error saving clearance:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error saving clearance status'
+        });
+    }
+});
+
+// Check if attendance exists for a date
+app.get('/api/attendance/check', async (req, res) => {
+    try {
+        const { date, class: className, stream } = req.query;
+
+        if (!date || !className || !stream) {
+            return res.status(400).json({
+                success: false,
+                message: 'Date, class, and stream are required'
+            });
+        }
+
+        const [rows] = await pool.execute(
+            `SELECT COUNT(*) as count 
+            FROM attendance a
+            JOIN students s ON a.student_id = s.id
+            WHERE a.date = ? AND s.class_id = ? AND s.stream_id = ?`,
+            [date, className, stream]
+        );
+
+        res.json({
+            success: true,
+            exists: rows[0].count > 0
+        });
+    } catch (error) {
+        console.error('Error checking attendance:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error checking attendance'
+        });
+    }
+});
+
+// Get attendance for a date
+app.get('/api/attendance', async (req, res) => {
+    try {
+        const { date, class: className, stream } = req.query;
+
+        if (!date || !className || !stream) {
+            return res.status(400).json({
+                success: false,
+                message: 'Date, class, and stream are required'
+            });
+        }
+
+        const [rows] = await pool.execute(
+            `SELECT s.admissionNumber, a.status, a.remarks
+            FROM attendance a
+            JOIN students s ON a.student_id = s.id
+            WHERE a.date = ? AND s.class_id = ? AND s.stream_id = ?`,
+            [date, className, stream]
+        );
+
+        res.json(rows);
+    } catch (error) {
+        console.error('Error fetching attendance:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error fetching attendance'
+        });
+    }
+});
+
+// Get student information
+app.get('/api/students/:admissionNumber/info', authenticateToken, async (req, res) => {
+    try {
+        const { admissionNumber } = req.params;
+
+        // Get student details with class and stream information
+        const [rows] = await pool.execute(
+            `SELECT s.*, c.name as class_name, st.name as stream_name
+            FROM students s
+            LEFT JOIN classes c ON s.class_id = c.id
+            LEFT JOIN streams st ON s.stream_id = st.id
+            WHERE s.admissionNumber = ?`,
+            [admissionNumber]
+        );
+
+        if (rows.length === 0) {
+            return res.status(404).json({
+                success: false,
+                message: 'Student not found'
+            });
+        }
+
+        const student = rows[0];
+
+        // Format the response
+        const response = {
+            success: true,
+            data: {
+                admissionNumber: student.admissionNumber,
+                firstName: student.firstName,
+                lastName: student.lastName,
+                class: student.class_name,
+                stream: student.stream_name,
+                parentName: student.parentName,
+                parentPhone: student.parentPhone,
+                parentEmail: student.parentEmail,
+                address: student.address,
+                previousSchool: student.previousSchool,
+                lastGrade: student.lastGrade
+            }
+        };
+
+        res.json(response.data);
+    } catch (error) {
+        console.error('Error fetching student info:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error fetching student information'
+        });
+    }
+});
+
+// Get student statistics
+app.get('/api/students/:admissionNumber/stats', authenticateToken, async (req, res) => {
+    try {
+        const { admissionNumber } = req.params;
+
+        // Get student ID
+        const [studentRows] = await pool.execute(
+            'SELECT id FROM students WHERE admissionNumber = ?',
+            [admissionNumber]
+        );
+
+        if (studentRows.length === 0) {
+            return res.status(404).json({
+                success: false,
+                message: 'Student not found'
+            });
+        }
+
+        const studentId = studentRows[0].id;
+
+        // Get total subjects
+        const [subjectCount] = await pool.execute(
+            'SELECT COUNT(DISTINCT subject_id) as count FROM grades WHERE student_id = ?',
+            [studentId]
+        );
+
+        // Get average grade
+        const [gradeAvg] = await pool.execute(
+            'SELECT AVG(marks) as average FROM grades WHERE student_id = ?',
+            [studentId]
+        );
+
+        // Get attendance rate
+        const [attendanceStats] = await pool.execute(
+            `SELECT 
+                COUNT(*) as total,
+                SUM(CASE WHEN status = 'present' THEN 1 ELSE 0 END) as present
+            FROM attendance 
+            WHERE student_id = ?`,
+            [studentId]
+        );
+
+        const attendanceRate = attendanceStats[0].total > 0 
+            ? (attendanceStats[0].present / attendanceStats[0].total) * 100 
+            : 0;
+
+        res.json({
+            totalSubjects: subjectCount[0].count || 0,
+            averageGrade: Math.round(gradeAvg[0].average || 0),
+            attendanceRate: Math.round(attendanceRate)
+        });
+    } catch (error) {
+        console.error('Error fetching student statistics:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error fetching student statistics'
+        });
+    }
+});
+
+// Get student recent activity
+app.get('/api/students/:admissionNumber/activity', authenticateToken, async (req, res) => {
+    try {
+        const { admissionNumber } = req.params;
+
+        // Get student ID
+        const [studentRows] = await pool.execute(
+            'SELECT id FROM students WHERE admissionNumber = ?',
+            [admissionNumber]
+        );
+
+        if (studentRows.length === 0) {
+            return res.status(404).json({
+                success: false,
+                message: 'Student not found'
+            });
+        }
+
+        const studentId = studentRows[0].id;
+
+        // Get recent grades
+        const [grades] = await pool.execute(
+            `SELECT 
+                g.*,
+                s.name as subject_name,
+                'grade' as type,
+                CONCAT('Grade received in ', s.name) as title,
+                g.created_at as timestamp
+            FROM grades g
+            JOIN subjects s ON g.subject_id = s.id
+            WHERE g.student_id = ?
+            ORDER BY g.created_at DESC
+            LIMIT 5`,
+            [studentId]
+        );
+
+        // Get recent attendance
+        const [attendance] = await pool.execute(
+            `SELECT 
+                *,
+                'attendance' as type,
+                CONCAT('Attendance marked as ', status) as title,
+                created_at as timestamp
+            FROM attendance
+            WHERE student_id = ?
+            ORDER BY created_at DESC
+            LIMIT 5`,
+            [studentId]
+        );
+
+        // Combine and sort activities
+        const activities = [...grades, ...attendance]
+            .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
+            .slice(0, 5);
+
+        res.json(activities);
+    } catch (error) {
+        console.error('Error fetching student activity:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error fetching student activity'
+        });
+    }
+});
+
+// Error handling middleware
+app.use((err, req, res, next) => {
+    logger.error('Server error:', err);
+    res.status(500).json({ message: 'Internal server error' });
+>>>>>>> 403b044 (Updated files, removed unused HTML/CSS/JS, added src and logs directories)
 }); 

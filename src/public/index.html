@@ -159,7 +159,7 @@
                         <div class="card-body text-center">
                             <h5 class="card-title">School Notices</h5>
                             <p class="card-text">Stay updated with the latest school announcements and notices.</p>
-                            <a href="registration-card.html" class="btn btn-primary">View Notices</a>
+                            <a href="notices.html" class="btn btn-primary">View Notices</a>
                         </div>
                     </div>
                 </div>
@@ -168,7 +168,7 @@
                         <div class="card-body text-center">
                             <h5 class="card-title">School Circulars</h5>
                             <p class="card-text">Access important school circulars and official communications.</p>
-                            <a href="registration-card.html" class="btn btn-primary">View Circulars</a>
+                            <a href="circulars.html" class="btn btn-primary">View Circulars</a>
                         </div>
                     </div>
                 </div>
@@ -195,7 +195,7 @@
                         <div class="card-body">
                             <h5 class="card-title">Important Notices</h5>
                             <p class="card-text">Stay updated with the latest school announcements and circulars.</p>
-                            <a href="circulars.html" class="btn btn-primary">View Notices</a>
+                            <a href="notices.html" class="btn btn-primary">View Notices</a>
                         </div>
                     </div>
                 </div>
@@ -204,7 +204,7 @@
                         <div class="card-body">
                             <h5 class="card-title">School Updates</h5>
                             <p class="card-text">Latest updates about school activities and achievements.</p>
-                            <a href="#" class="btn btn-primary">Read More</a>
+                            <a href="updates.html" class="btn btn-primary">Read More</a>
                         </div>
                     </div>
                 </div>
@@ -248,6 +248,25 @@
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Check if user is logged in as admin
+        document.addEventListener('DOMContentLoaded', function() {
+            const isAdmin = localStorage.getItem('adminLoggedIn') === 'true';
+            const adminToken = localStorage.getItem('adminToken');
+            
+            // Only redirect to admin.html if we're on the admin-login page
+            if (isAdmin && adminToken && window.location.pathname.includes('admin-login.html')) {
+                window.location.href = 'admin.html';
+            }
+        });
+
+        // Logout function
+        function logout() {
+            localStorage.removeItem('adminToken');
+            localStorage.removeItem('adminLoggedIn');
+            window.location.href = 'admin-login.html';
+        }
+    </script>
 </body>
 
 </html>

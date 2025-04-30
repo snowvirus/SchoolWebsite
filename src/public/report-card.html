@@ -4,9 +4,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<<<<<<< HEAD
     <title>Report Cards - St Francis Secondary School</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="/css/styles.css" rel="stylesheet">
+=======
+    <title>Report Card - St Francis Secondary School</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/css/styles.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+>>>>>>> 403b044 (Updated files, removed unused HTML/CSS/JS, added src and logs directories)
     <style>
         body {
             background-color: #f8f9fa;
@@ -30,6 +37,10 @@
             color: white;
             padding: 60px 0;
             text-align: center;
+<<<<<<< HEAD
+=======
+            margin-bottom: 30px;
+>>>>>>> 403b044 (Updated files, removed unused HTML/CSS/JS, added src and logs directories)
         }
 
         .card {
@@ -54,6 +65,122 @@
             color: white;
             padding: 40px 0;
         }
+<<<<<<< HEAD
+=======
+
+        .report-card {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-header {
+            background-color: #1a237e;
+            color: white;
+            border-radius: 10px 10px 0 0;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .card-header h3 {
+            margin-bottom: 5px;
+            font-size: 24px;
+        }
+
+        .card-header p {
+            margin-bottom: 0;
+            font-size: 16px;
+        }
+
+        .card-body {
+            padding: 20px;
+        }
+
+        .student-info {
+            padding: 20px;
+        }
+
+        .info-row {
+            margin-bottom: 12px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 8px;
+        }
+
+        .info-label {
+            font-weight: 600;
+            color: #1a237e;
+            min-width: 180px;
+            display: inline-block;
+        }
+
+        .info-value {
+            color: #333;
+        }
+
+        .grades-table {
+            width: 100%;
+            margin: 20px 0;
+            border-collapse: collapse;
+        }
+
+        .grades-table th {
+            background-color: #1a237e;
+            color: white;
+            padding: 12px;
+            text-align: left;
+        }
+
+        .grades-table td {
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .grades-table tfoot td {
+            font-weight: 600;
+            background-color: #f8f9fa;
+        }
+
+        .print-button {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .print-button .btn {
+            padding: 8px 25px;
+        }
+
+        @media print {
+            body {
+                padding: 0;
+                margin: 0;
+            }
+
+            .card {
+                border: none;
+                box-shadow: none;
+            }
+
+            .report-header {
+                display: none;
+            }
+
+            .info-row {
+                margin-bottom: 8px;
+                padding-bottom: 5px;
+            }
+
+            .grades-table {
+                margin-top: 15px;
+            }
+
+            .print-button, .navbar, .footer {
+                display: none !important;
+            }
+        }
+>>>>>>> 403b044 (Updated files, removed unused HTML/CSS/JS, added src and logs directories)
     </style>
 </head>
 
@@ -109,6 +236,7 @@
 
     <!-- Main Content -->
     <div class="container mt-4">
+<<<<<<< HEAD
         <!-- Search Form -->
         <div class="card mb-4">
             <div class="card-body">
@@ -169,6 +297,95 @@
                     <!-- Grades Table -->
                     <div class="table-responsive">
                         <table class="table table-bordered">
+=======
+        <div class="report-card">
+            <div class="card-header">
+                <h3>Academic Report Card</h3>
+                <p class="text-muted">St Francis Secondary School</p>
+            </div>
+            <div class="card-body">
+                <!-- Search Form -->
+                <div class="mb-4">
+                    <form id="searchForm" class="row g-3">
+                        <div class="col-md-4">
+                            <label for="admissionNumber" class="form-label">Admission Number</label>
+                            <input type="text" class="form-control" id="admissionNumber" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="term" class="form-label">Term</label>
+                            <select class="form-select" id="term" required>
+                                <option value="">Select Term</option>
+                                <option value="1">Term 1</option>
+                                <option value="2">Term 2</option>
+                                <option value="3">Term 3</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="year" class="form-label">Year</label>
+                            <select class="form-select" id="year" required>
+                                <option value="">Select Year</option>
+                                <option value="2024">2024</option>
+                                <option value="2025">2025</option>
+                            </select>
+                        </div>
+                        <div class="col-12">
+                            <button type="submit" class="btn btn-primary">Search</button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Error Message -->
+                <div id="errorMessage" class="alert alert-danger mt-3" style="display: none;"></div>
+
+                <!-- Report Card Display -->
+                <div id="reportCard" class="card" style="display: none;">
+                    <div class="card-header text-center">
+                        <div class="school-logo mb-2">
+                            <img src="/images/bag.png" alt="School Logo" height="60">
+                        </div>
+                        <h3>Student Report Card</h3>
+                        <p>St Francis Secondary School</p>
+                        <p class="small mb-0">Kiboga District, Uganda</p>
+                    </div>
+                    <div class="student-info">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="info-row">
+                                    <span class="info-label">Admission Number:</span>
+                                    <span id="admissionNumber" class="info-value"></span>
+                                </div>
+                                <div class="info-row">
+                                    <span class="info-label">Full Name:</span>
+                                    <span id="fullName" class="info-value"></span>
+                                </div>
+                                <div class="info-row">
+                                    <span class="info-label">Class:</span>
+                                    <span id="class" class="info-value"></span>
+                                </div>
+                                <div class="info-row">
+                                    <span class="info-label">Stream:</span>
+                                    <span id="stream" class="info-value"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="info-row">
+                                    <span class="info-label">Term:</span>
+                                    <span id="term" class="info-value"></span>
+                                </div>
+                                <div class="info-row">
+                                    <span class="info-label">Year:</span>
+                                    <span id="year" class="info-value"></span>
+                                </div>
+                                <div class="info-row">
+                                    <span class="info-label">Date Generated:</span>
+                                    <span id="dateGenerated" class="info-value"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Grades Table -->
+                        <table class="table table-bordered grades-table">
+>>>>>>> 403b044 (Updated files, removed unused HTML/CSS/JS, added src and logs directories)
                             <thead>
                                 <tr>
                                     <th>Subject</th>
@@ -178,6 +395,7 @@
                                 </tr>
                             </thead>
                             <tbody id="gradesTableBody">
+<<<<<<< HEAD
                                 <!-- Grades will be populated here -->
                             </tbody>
                         </table>
@@ -192,6 +410,32 @@
                     <!-- PDF Generation Button -->
                     <div class="text-center mt-4">
                         <button class="btn btn-primary" onclick="generatePDF()">Generate PDF</button>
+=======
+                                <!-- Grades will be loaded here -->
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td colspan="1"><strong>Total Marks</strong></td>
+                                    <td id="totalMarks"></td>
+                                    <td colspan="2"></td>
+                                </tr>
+                                <tr>
+                                    <td colspan="1"><strong>Average</strong></td>
+                                    <td id="averageMarks"></td>
+                                    <td colspan="2"></td>
+                                </tr>
+                                <tr>
+                                    <td colspan="1"><strong>Overall Grade</strong></td>
+                                    <td id="overallGrade"></td>
+                                    <td colspan="2"></td>
+                                </tr>
+                            </tfoot>
+                        </table>
+
+                        <div class="text-center print-button">
+                            <button class="btn btn-primary" onclick="generatePDF()">Generate PDF</button>
+                        </div>
+>>>>>>> 403b044 (Updated files, removed unused HTML/CSS/JS, added src and logs directories)
                     </div>
                 </div>
             </div>
