@@ -7,10 +7,7 @@
     <title>Registration Card - St Francis Secondary School</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="/css/styles.css" rel="stylesheet">
-<<<<<<< HEAD
-=======
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
->>>>>>> 403b044 (Updated files, removed unused HTML/CSS/JS, added src and logs directories)
     <style>
         body {
             background-color: #f8f9fa;
@@ -32,8 +29,6 @@
             color: white;
             padding: 60px 0;
             text-align: center;
-<<<<<<< HEAD
-=======
             margin-bottom: 30px;
         }
 
@@ -41,7 +36,6 @@
             max-width: 800px;
             margin: 0 auto;
             padding: 20px;
->>>>>>> 403b044 (Updated files, removed unused HTML/CSS/JS, added src and logs directories)
         }
 
         .card {
@@ -51,32 +45,6 @@
             background-color: white;
         }
 
-<<<<<<< HEAD
-        .btn-primary {
-            background-color: #1a237e;
-            border-color: #1a237e;
-        }
-
-        .btn-primary:hover {
-            background-color: #0d47a1;
-            border-color: #0d47a1;
-        }
-
-        .clearance-section {
-            border-top: 2px solid #1a237e;
-            margin-top: 20px;
-            padding-top: 20px;
-        }
-
-        .clearance-item {
-            margin-bottom: 15px;
-        }
-
-        .clearance-item label {
-            display: flex;
-            align-items: center;
-            cursor: pointer;
-=======
         .card-header {
             background-color: #1a237e;
             color: white;
@@ -141,13 +109,10 @@
             display: flex;
             align-items: center;
             color: #333;
->>>>>>> 403b044 (Updated files, removed unused HTML/CSS/JS, added src and logs directories)
         }
 
         .clearance-item input[type="checkbox"] {
             margin-right: 10px;
-<<<<<<< HEAD
-=======
             width: 16px;
             height: 16px;
         }
@@ -166,15 +131,12 @@
 
         .print-button .btn {
             padding: 8px 25px;
->>>>>>> 403b044 (Updated files, removed unused HTML/CSS/JS, added src and logs directories)
         }
 
         .footer {
             background: #1a237e;
             color: white;
             padding: 40px 0;
-<<<<<<< HEAD
-=======
             margin-top: 40px;
         }
 
@@ -210,18 +172,13 @@
             .print-button, .navbar, .footer {
                 display: none !important;
             }
->>>>>>> 403b044 (Updated files, removed unused HTML/CSS/JS, added src and logs directories)
         }
     </style>
 </head>
 
 <body>
     <!-- Navigation Bar -->
-<<<<<<< HEAD
-    <nav class="navbar navbar-expand-lg navbar-dark">
-=======
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
->>>>>>> 403b044 (Updated files, removed unused HTML/CSS/JS, added src and logs directories)
         <div class="container">
             <a class="navbar-brand d-flex align-items-center" href="index.html">
                 <img src="/images/bag.png" alt="St Francis Secondary School Logo" height="50" class="me-2">
@@ -261,40 +218,6 @@
         </div>
     </nav>
 
-<<<<<<< HEAD
-    <!-- Registration Card Header -->
-    <section class="registration-header">
-        <div class="container">
-            <h1 class="display-4">Registration Card</h1>
-            <p class="lead">Generate your registration card and clearance form</p>
-        </div>
-    </section>
-
-    <!-- Main Content -->
-    <div class="container mt-4">
-        <!-- Search Form -->
-        <div class="card mb-4">
-            <div class="card-body">
-                <h4 class="card-title mb-4">Search Student</h4>
-                <form id="searchForm" class="row g-3">
-                    <div class="col-md-6">
-                        <label for="admissionNumber" class="form-label">Admission Number</label>
-                        <input type="text" class="form-control" id="admissionNumber" required>
-                    </div>
-                    <div class="col-md-6">
-                        <label for="year" class="form-label">Academic Year</label>
-                        <select class="form-select" id="year" required>
-                            <option value="">Select Year</option>
-                            <option value="2024">2024</option>
-                            <option value="2025">2025</option>
-                        </select>
-                    </div>
-                    <div class="col-12">
-                        <button type="submit" class="btn btn-primary">Search</button>
-                    </div>
-                </form>
-            </div>
-=======
     <!-- Registration Header -->
     <section class="registration-header">
         <div class="container">
@@ -317,72 +240,10 @@
                 </div>
             </form>
             <div id="errorMessage" class="alert alert-danger mt-3" style="display: none;"></div>
->>>>>>> 403b044 (Updated files, removed unused HTML/CSS/JS, added src and logs directories)
         </div>
 
         <!-- Registration Card Display -->
         <div id="registrationCard" class="card" style="display: none;">
-<<<<<<< HEAD
-            <div class="card-body">
-                <div class="text-center mb-4">
-                    <h4>St Francis Secondary School</h4>
-                    <p>Kiboga District, Uganda</p>
-                    <h5>Registration Card</h5>
-                </div>
-
-                <!-- Student Information -->
-                <div class="row mb-4">
-                    <div class="col-md-6">
-                        <p><strong>Student Name:</strong> <span id="studentName">-</span></p>
-                        <p><strong>Admission Number:</strong> <span id="displayAdmissionNumber">-</span></p>
-                        <p><strong>Class:</strong> <span id="studentClass">-</span></p>
-                        <p><strong>Date of Birth:</strong> <span id="dateOfBirth">-</span></p>
-                    </div>
-                    <div class="col-md-6">
-                        <p><strong>Academic Year:</strong> <span id="academicYear">-</span></p>
-                        <p><strong>Parent/Guardian:</strong> <span id="parentName">-</span></p>
-                        <p><strong>Contact Number:</strong> <span id="parentContact">-</span></p>
-                        <p><strong>Date Issued:</strong> <span id="issueDate">-</span></p>
-                    </div>
-                </div>
-
-                <!-- Clearance Form -->
-                <div class="clearance-section">
-                    <h5 class="mb-4">Clearance Form</h5>
-                    <div class="clearance-item">
-                        <label>
-                            <input type="checkbox" id="libraryClearance">
-                            Library Clearance
-                        </label>
-                    </div>
-                    <div class="clearance-item">
-                        <label>
-                            <input type="checkbox" id="accountsClearance">
-                            Accounts Clearance
-                        </label>
-                    </div>
-                    <div class="clearance-item">
-                        <label>
-                            <input type="checkbox" id="sportsClearance">
-                            Sports Department Clearance
-                        </label>
-                    </div>
-                    <div class="clearance-item">
-                        <label>
-                            <input type="checkbox" id="labClearance">
-                            Laboratory Clearance
-                        </label>
-                    </div>
-                    <div class="clearance-item">
-                        <label>
-                            <input type="checkbox" id="hostelClearance">
-                            Hostel Clearance
-                        </label>
-                    </div>
-                </div>
-
-                <div class="text-center mt-4">
-=======
             <div class="card-header">
                 <div class="school-logo text-center mb-2">
                     <img src="/images/bag.png" alt="School Logo" height="60">
@@ -506,7 +367,6 @@
                 </div>
 
                 <div class="text-center print-button mt-4">
->>>>>>> 403b044 (Updated files, removed unused HTML/CSS/JS, added src and logs directories)
                     <button class="btn btn-primary" onclick="generatePDF()">Generate PDF</button>
                 </div>
             </div>
@@ -514,11 +374,7 @@
     </div>
 
     <!-- Footer -->
-<<<<<<< HEAD
-    <footer class="footer mt-5">
-=======
     <footer class="footer">
->>>>>>> 403b044 (Updated files, removed unused HTML/CSS/JS, added src and logs directories)
         <div class="container">
             <div class="row">
                 <div class="col-md-4">
@@ -534,10 +390,6 @@
                         <li><a href="registration.html" class="text-white">Registration</a></li>
                         <li><a href="report-card.html" class="text-white">Report Cards</a></li>
                         <li><a href="attendance.html" class="text-white">Attendance</a></li>
-<<<<<<< HEAD
-                        <li><a href="registration-card.html" class="text-white">Registration Card</a></li>
-=======
->>>>>>> 403b044 (Updated files, removed unused HTML/CSS/JS, added src and logs directories)
                     </ul>
                 </div>
                 <div class="col-md-4">

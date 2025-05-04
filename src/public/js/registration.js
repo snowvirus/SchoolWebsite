@@ -45,14 +45,8 @@ document.addEventListener('DOMContentLoaded', function () {
             console.log('Server response:', result);
 
             if (response.ok) {
-<<<<<<< HEAD
-                showSuccessMessage('Registration successful! Student registration number: ' + result.registrationNumber);
-                form.reset();
-                form.classList.remove('was-validated');
-=======
                 // Redirect to registration card page with the admission number
                 window.location.href = `/registration-card.html?admissionNumber=${result.admissionNumber}`;
->>>>>>> 403b044 (Updated files, removed unused HTML/CSS/JS, added src and logs directories)
             } else {
                 if (response.status === 409) {
                     // Duplicate registration number
