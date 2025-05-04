@@ -1,6 +1,3 @@
-<<<<<<< HEAD
- 
-=======
 document.addEventListener('DOMContentLoaded', function() {
     const loginForm = document.getElementById('loginForm');
     const togglePassword = document.querySelector('.toggle-password');
@@ -61,4 +58,3 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 }); 
->>>>>>> 403b044 (Updated files, removed unused HTML/CSS/JS, added src and logs directories)

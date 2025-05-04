@@ -14,14 +14,7 @@
     "dependencies": {
         "bcryptjs": "^2.4.3",
         "cors": "^2.8.5",
-<<<<<<< HEAD
-        "dotenv": "^16.0.3",
-        "express": "^4.18.2",
-        "jsonwebtoken": "^9.0.0",
-        "mysql2": "^3.2.0",
-        "pdfkit": "^0.13.0",
-        "winston": "^3.8.2"
-=======
+        "crypto": "^1.0.1",
         "dotenv": "^10.0.0",
         "express": "^4.18.2",
         "express-rate-limit": "^5.5.0",
@@ -31,7 +24,6 @@
         "pdfkit": "^0.13.0",
         "qrcode": "^1.5.4",
         "winston": "^3.17.0"
->>>>>>> 403b044 (Updated files, removed unused HTML/CSS/JS, added src and logs directories)
     },
     "devDependencies": {
         "eslint": "^8.36.0",

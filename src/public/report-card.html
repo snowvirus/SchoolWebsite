@@ -4,16 +4,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<<<<<<< HEAD
-    <title>Report Cards - St Francis Secondary School</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="/css/styles.css" rel="stylesheet">
-=======
     <title>Report Card - St Francis Secondary School</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="/css/styles.css" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
->>>>>>> 403b044 (Updated files, removed unused HTML/CSS/JS, added src and logs directories)
     <style>
         body {
             background-color: #f8f9fa;
@@ -37,10 +31,7 @@
             color: white;
             padding: 60px 0;
             text-align: center;
-<<<<<<< HEAD
-=======
             margin-bottom: 30px;
->>>>>>> 403b044 (Updated files, removed unused HTML/CSS/JS, added src and logs directories)
         }
 
         .card {
@@ -65,8 +56,6 @@
             color: white;
             padding: 40px 0;
         }
-<<<<<<< HEAD
-=======
 
         .report-card {
             max-width: 800px;
@@ -180,7 +169,6 @@
                 display: none !important;
             }
         }
->>>>>>> 403b044 (Updated files, removed unused HTML/CSS/JS, added src and logs directories)
     </style>
 </head>
 
@@ -236,68 +224,6 @@
 
     <!-- Main Content -->
     <div class="container mt-4">
-<<<<<<< HEAD
-        <!-- Search Form -->
-        <div class="card mb-4">
-            <div class="card-body">
-                <h4 class="card-title mb-4">Search Report Card</h4>
-                <form id="reportCardForm" class="row g-3">
-                    <div class="col-md-4">
-                        <label for="admissionNumber" class="form-label">Admission Number</label>
-                        <input type="text" class="form-control" id="admissionNumber" required>
-                    </div>
-                    <div class="col-md-4">
-                        <label for="term" class="form-label">Term</label>
-                        <select class="form-select" id="term" required>
-                            <option value="">Select Term</option>
-                            <option value="1">Term 1</option>
-                            <option value="2">Term 2</option>
-                            <option value="3">Term 3</option>
-                        </select>
-                    </div>
-                    <div class="col-md-4">
-                        <label for="year" class="form-label">Year</label>
-                        <select class="form-select" id="year" required>
-                            <option value="">Select Year</option>
-                            <option value="2024">2024</option>
-                            <option value="2025">2025</option>
-                        </select>
-                    </div>
-                    <div class="col-12">
-                        <button type="submit" class="btn btn-primary">Search</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-
-        <!-- Report Card Display -->
-        <div id="reportCardDisplay" style="display: none;">
-            <div class="card">
-                <div class="card-body">
-                    <div class="text-center mb-4">
-                        <h4>St Francis Secondary School</h4>
-                        <p>Kiboga District, Uganda</p>
-                        <h5>Report Card</h5>
-                    </div>
-
-                    <!-- Student Information -->
-                    <div class="row mb-4">
-                        <div class="col-md-6">
-                            <p><strong>Student Name:</strong> <span id="studentName">-</span></p>
-                            <p><strong>Admission Number:</strong> <span id="displayAdmissionNumber">-</span></p>
-                            <p><strong>Class:</strong> <span id="studentClass">-</span></p>
-                        </div>
-                        <div class="col-md-6">
-                            <p><strong>Term:</strong> <span id="displayTerm">-</span></p>
-                            <p><strong>Academic Year:</strong> <span id="displayYear">-</span></p>
-                            <p><strong>Date Issued:</strong> <span id="issueDate">-</span></p>
-                        </div>
-                    </div>
-
-                    <!-- Grades Table -->
-                    <div class="table-responsive">
-                        <table class="table table-bordered">
-=======
         <div class="report-card">
             <div class="card-header">
                 <h3>Academic Report Card</h3>
@@ -385,7 +311,6 @@
 
                         <!-- Grades Table -->
                         <table class="table table-bordered grades-table">
->>>>>>> 403b044 (Updated files, removed unused HTML/CSS/JS, added src and logs directories)
                             <thead>
                                 <tr>
                                     <th>Subject</th>
@@ -395,22 +320,6 @@
                                 </tr>
                             </thead>
                             <tbody id="gradesTableBody">
-<<<<<<< HEAD
-                                <!-- Grades will be populated here -->
-                            </tbody>
-                        </table>
-                    </div>
-
-                    <!-- Summary -->
-                    <div class="mt-4">
-                        <p><strong>Total Marks:</strong> <span id="totalMarks">-</span></p>
-                        <p><strong>Average Grade:</strong> <span id="averageGrade">-</span></p>
-                    </div>
-
-                    <!-- PDF Generation Button -->
-                    <div class="text-center mt-4">
-                        <button class="btn btn-primary" onclick="generatePDF()">Generate PDF</button>
-=======
                                 <!-- Grades will be loaded here -->
                             </tbody>
                             <tfoot>
@@ -435,7 +344,6 @@
                         <div class="text-center print-button">
                             <button class="btn btn-primary" onclick="generatePDF()">Generate PDF</button>
                         </div>
->>>>>>> 403b044 (Updated files, removed unused HTML/CSS/JS, added src and logs directories)
                     </div>
                 </div>
             </div>

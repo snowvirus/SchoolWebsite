@@ -14,20 +14,6 @@ async function setupAdmin() {
         const connection = await mysql.createConnection(dbConfig);
         console.log('Connected to database');
 
-<<<<<<< HEAD
-        // Hash password
-        const password = 'admin123'; // Default password
-        const salt = await bcrypt.genSalt(10);
-        const passwordHash = await bcrypt.hash(password, salt);
-
-        // Insert admin user if not exists
-        await connection.execute(`
-            INSERT IGNORE INTO admin_users (username, password, full_name, email, role)
-            VALUES (?, ?, 'Administrator', 'admin@school.com', 'admin')
-        `, ['admin', passwordHash]);
-
-        console.log('Admin user created/verified');
-=======
         // Check if admin_users table exists and its structure
         const [tables] = await connection.execute('SHOW TABLES LIKE "admin_users"');
         if (tables.length === 0) {
@@ -65,7 +51,6 @@ async function setupAdmin() {
         `, ['admin', hashedPassword, 'admin@school.com', 'admin']);
 
         console.log('Admin user created successfully');
->>>>>>> 403b044 (Updated files, removed unused HTML/CSS/JS, added src and logs directories)
         console.log('Username: admin');
         console.log('Password:', password);
         console.log('Please change this password after first login');

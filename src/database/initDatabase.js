@@ -2,8 +2,6 @@ const mysql = require('mysql2/promise');
 const fs = require('fs').promises;
 const path = require('path');
 
-<<<<<<< HEAD
-=======
 async function createDatabase() {
     // Create a connection without specifying the database
     const connection = await mysql.createConnection({
@@ -18,7 +16,6 @@ async function createDatabase() {
 }
 
 // Create a pool with the database specified
->>>>>>> 403b044 (Updated files, removed unused HTML/CSS/JS, added src and logs directories)
 const pool = mysql.createPool({
     host: process.env.DB_HOST || 'localhost',
     user: process.env.DB_USER || 'root',
@@ -31,16 +28,11 @@ const pool = mysql.createPool({
 
 async function initializeDatabase() {
     try {
-<<<<<<< HEAD
-        // Read and execute SQL setup script
-        const sqlPath = path.join(__dirname, 'database_setup.sql');
-=======
         // Create database if it doesn't exist
         await createDatabase();
 
         // Read and execute SQL setup script
         const sqlPath = path.join(__dirname, 'setup_database.sql');
->>>>>>> 403b044 (Updated files, removed unused HTML/CSS/JS, added src and logs directories)
         const sqlScript = await fs.readFile(sqlPath, 'utf8');
 
         // Split script into individual statements
@@ -61,15 +53,6 @@ async function initializeDatabase() {
                         continue;
                     }
                     await connection.execute(statement);
-<<<<<<< HEAD
-                } catch (error) {
-                    // Ignore errors for existing tables and duplicate entries
-                    if (error.code !== 'ER_TABLE_EXISTS_ERROR' && 
-                        error.code !== 'ER_DUP_ENTRY' &&
-                        !error.message.includes('already exists')) {
-                        console.error('Error executing statement:', error);
-                        console.error('Statement:', statement);
-=======
                     console.log('Executed SQL statement successfully');
                 } catch (error) {
                     // Log all errors for debugging
@@ -81,7 +64,6 @@ async function initializeDatabase() {
                         error.code !== 'ER_DUP_ENTRY' &&
                         !error.message.includes('already exists')) {
                         throw error;
->>>>>>> 403b044 (Updated files, removed unused HTML/CSS/JS, added src and logs directories)
                     }
                 }
             }

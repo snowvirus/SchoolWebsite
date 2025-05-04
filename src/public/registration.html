@@ -55,8 +55,6 @@
             color: white;
             padding: 40px 0;
         }
-<<<<<<< HEAD
-=======
 
         .registration-form {
             max-width: 800px;
@@ -71,17 +69,12 @@
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             margin-bottom: 20px;
         }
->>>>>>> 403b044 (Updated files, removed unused HTML/CSS/JS, added src and logs directories)
     </style>
 </head>
 
 <body>
     <!-- Navigation Bar -->
-<<<<<<< HEAD
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-=======
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
->>>>>>> 403b044 (Updated files, removed unused HTML/CSS/JS, added src and logs directories)
         <div class="container">
             <a class="navbar-brand d-flex align-items-center" href="index.html">
                 <img src="/images/bag.png" alt="St Francis Secondary School Logo" height="50" class="me-2">
@@ -121,131 +114,6 @@
         </div>
     </nav>
 
-<<<<<<< HEAD
-    <!-- Registration Form -->
-    <div class="container py-5">
-        <div class="row justify-content-center">
-            <div class="col-md-8">
-                <div class="card shadow">
-                    <div class="card-header bg-primary text-white">
-                        <h3 class="mb-0">Student Registration Form</h3>
-                    </div>
-                    <div class="card-body">
-                        <form id="registrationForm" class="needs-validation" novalidate>
-                            <!-- Personal Information -->
-                            <h4 class="mb-3">Personal Information</h4>
-                            <div class="row mb-3">
-                                <div class="col-md-6">
-                                    <label for="firstName" class="form-label">First Name</label>
-                                    <input type="text" class="form-control" id="firstName" name="firstName" required>
-                                    <div class="invalid-feedback">Please enter first name</div>
-                                </div>
-                                <div class="col-md-6">
-                                    <label for="lastName" class="form-label">Last Name</label>
-                                    <input type="text" class="form-control" id="lastName" name="lastName" required>
-                                    <div class="invalid-feedback">Please enter last name</div>
-                                </div>
-                            </div>
-
-                            <div class="row mb-3">
-                                <div class="col-md-6">
-                                    <label for="dateOfBirth" class="form-label">Date of Birth</label>
-                                    <input type="date" class="form-control" id="dateOfBirth" name="dateOfBirth" required>
-                                    <div class="invalid-feedback">Please select date of birth</div>
-                                </div>
-                                <div class="col-md-6">
-                                    <label for="gender" class="form-label">Gender</label>
-                                    <select class="form-select" id="gender" name="gender" required>
-                                        <option value="">Select Gender</option>
-                                        <option value="male">Male</option>
-                                        <option value="female">Female</option>
-                                    </select>
-                                    <div class="invalid-feedback">Please select gender</div>
-                                </div>
-                            </div>
-
-                            <!-- Academic Information -->
-                            <h4 class="mb-3 mt-4">Academic Information</h4>
-                            <div class="row mb-3">
-                                <div class="col-md-6">
-                                    <label for="registrationNumber" class="form-label">Registration Number</label>
-                                    <input type="text" class="form-control" id="registrationNumber" name="registrationNumber" required>
-                                    <div class="invalid-feedback">Please enter registration number</div>
-                                </div>
-                                <div class="col-md-6">
-                                    <label for="class" class="form-label">Class</label>
-                                    <select class="form-select" id="class" name="class" required>
-                                        <option value="">Select Class</option>
-                                        <option value="Form 1">Form 1</option>
-                                        <option value="Form 2">Form 2</option>
-                                        <option value="Form 3">Form 3</option>
-                                        <option value="Form 4">Form 4</option>
-                                    </select>
-                                    <div class="invalid-feedback">Please select class</div>
-                                </div>
-                            </div>
-
-                            <div class="mb-3">
-                                <label for="stream" class="form-label">Stream</label>
-                                <select class="form-select" id="stream" name="stream" required>
-                                    <option value="">Select Stream</option>
-                                    <option value="A">A</option>
-                                    <option value="B">B</option>
-                                    <option value="C">C</option>
-                                </select>
-                                <div class="invalid-feedback">Please select stream</div>
-                            </div>
-
-                            <!-- Parent/Guardian Information -->
-                            <h4 class="mb-3 mt-4">Parent/Guardian Information</h4>
-                            <div class="row mb-3">
-                                <div class="col-md-6">
-                                    <label for="parentName" class="form-label">Parent/Guardian Name</label>
-                                    <input type="text" class="form-control" id="parentName" name="parentName" required>
-                                    <div class="invalid-feedback">Please enter parent/guardian name</div>
-                                </div>
-                                <div class="col-md-6">
-                                    <label for="parentPhone" class="form-label">Phone Number</label>
-                                    <input type="tel" class="form-control" id="parentPhone" name="parentPhone" required>
-                                    <div class="invalid-feedback">Please enter phone number</div>
-                                </div>
-                            </div>
-
-                            <div class="mb-3">
-                                <label for="parentEmail" class="form-label">Email Address</label>
-                                <input type="email" class="form-control" id="parentEmail" name="parentEmail">
-                                <div class="invalid-feedback">Please enter a valid email address</div>
-                            </div>
-
-                            <div class="mb-3">
-                                <label for="address" class="form-label">Residential Address</label>
-                                <textarea class="form-control" id="address" name="address" rows="3"></textarea>
-                            </div>
-
-                            <!-- Emergency Contact -->
-                            <h4 class="mb-3 mt-4">Emergency Contact</h4>
-                            <div class="row mb-3">
-                                <div class="col-md-6">
-                                    <label for="emergencyContact" class="form-label">Emergency Contact Name</label>
-                                    <input type="text" class="form-control" id="emergencyContact"
-                                        name="emergencyContact" required>
-                                </div>
-                                <div class="col-md-6">
-                                    <label for="emergencyPhone" class="form-label">Emergency Phone</label>
-                                    <input type="tel" class="form-control" id="emergencyPhone" name="emergencyPhone"
-                                        required>
-                                </div>
-                            </div>
-
-                            <!-- Submit Button -->
-                            <div class="d-grid gap-2">
-                                <button type="submit" class="btn btn-primary">Register Student</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-=======
     <div class="container">
         <div class="registration-form">
             <h2 class="text-center mb-4">Student Registration Form</h2>
@@ -345,7 +213,6 @@
                     <button type="submit" class="btn btn-primary btn-lg">Submit Registration</button>
                 </div>
             </form>
->>>>>>> 403b044 (Updated files, removed unused HTML/CSS/JS, added src and logs directories)
         </div>
     </div>
 
@@ -385,10 +252,6 @@
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<<<<<<< HEAD
-    <script src="/js/main.js"></script>
-    <script src="/js/registration.js"></script>
-=======
     <script>
         document.getElementById('registrationForm').addEventListener('submit', async function(e) {
             e.preventDefault();
@@ -495,7 +358,6 @@
             }
         });
     </script>
->>>>>>> 403b044 (Updated files, removed unused HTML/CSS/JS, added src and logs directories)
 </body>
 
 </html>

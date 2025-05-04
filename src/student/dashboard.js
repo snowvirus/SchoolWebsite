@@ -10,44 +10,24 @@ async function initDashboard() {
 
     if (!token || !user) {
         console.error('Auth token or user data not found. Redirecting to login.');
-<<<<<<< HEAD
-        window.location.href = '/login.html'; // Use absolute path for login redirect
-        return; // Stop script execution
-=======
         window.location.href = '/login.html';
         return;
->>>>>>> 403b044 (Updated files, removed unused HTML/CSS/JS, added src and logs directories)
     }
     console.log('User authenticated, proceeding with dashboard init.');
 
     try {
         // Get user data from API
         const userData = await getUserData(token);
-<<<<<<< HEAD
-        updateUserProfile(userData); // Update based on fetched data
-
-        // --- Remove Mock Data Loading for Now ---
-        // const dashboardData = await getDashboardData(); 
-        // if(dashboardData.stats) updateDashboardStats(dashboardData.stats); 
-        // if(dashboardData.recentActivities) updateRecentActivities(dashboardData.recentActivities);
-        // if(dashboardData.upcomingEvents) updateUpcomingEvents(dashboardData.upcomingEvents);
-        clearPlaceholderData(); // Clear static placeholders
-=======
         updateUserProfile(userData);
 
         // Get student statistics
         const stats = await getStudentStats(user.username);
         updateDashboardStats(stats);
->>>>>>> 403b044 (Updated files, removed unused HTML/CSS/JS, added src and logs directories)
 
         // Initialize event listeners
         initEventListeners();
     } catch (error) {
         console.error('Error initializing dashboard:', error);
-<<<<<<< HEAD
-        // Display a user-friendly error message on the page
-=======
->>>>>>> 403b044 (Updated files, removed unused HTML/CSS/JS, added src and logs directories)
         const welcomeSection = document.querySelector('.welcome-section h2');
         if (welcomeSection) {
             welcomeSection.textContent = 'Error loading dashboard.';
@@ -56,13 +36,6 @@ async function initDashboard() {
         if(dashboardContent) {
             dashboardContent.innerHTML += '<p class="text-danger text-center">Could not load dashboard data. Please try again later.</p>';
         }
-<<<<<<< HEAD
-        // Optionally clear sensitive items and redirect
-        // localStorage.removeItem('token');
-        // localStorage.removeItem('user');
-        // window.location.href = '../public/login.html';
-=======
->>>>>>> 403b044 (Updated files, removed unused HTML/CSS/JS, added src and logs directories)
     }
 }
 
@@ -70,62 +43,24 @@ async function initDashboard() {
 async function getUserData(token) {
     console.log('Fetching student profile data...');
     try {
-<<<<<<< HEAD
-        const response = await fetch('/api/profile/student', { // Use the correct API endpoint
-=======
         const response = await fetch('/api/profile/student', {
->>>>>>> 403b044 (Updated files, removed unused HTML/CSS/JS, added src and logs directories)
             headers: {
                 'Authorization': `Bearer ${token}`
             }
         });
 
         if (!response.ok) {
-<<<<<<< HEAD
-            // If unauthorized (e.g., token expired), redirect to login
-            if (response.status === 401 || response.status === 403) {
-                 console.error('Unauthorized or Forbidden fetching profile. Redirecting...');
-                 localStorage.removeItem('token');
-                 localStorage.removeItem('user');
-                 window.location.href = '/login.html'; // Use absolute path for login redirect
-                 throw new Error('Redirecting due to auth error.'); // Stop further execution
-=======
             if (response.status === 401 || response.status === 403) {
                 console.error('Unauthorized or Forbidden fetching profile. Redirecting...');
                 localStorage.removeItem('token');
                 localStorage.removeItem('user');
                 window.location.href = '/login.html';
                 throw new Error('Redirecting due to auth error.');
->>>>>>> 403b044 (Updated files, removed unused HTML/CSS/JS, added src and logs directories)
             }
             throw new Error(`HTTP error! status: ${response.status}`);
         }
         
         const profileData = await response.json();
-<<<<<<< HEAD
-
-        if (profileData.success && profileData.data) {
-            console.log('Profile data fetched:', profileData.data);
-            return profileData.data; // Return the data object
-        } else {
-            console.error('API response indicates failure or missing data:', profileData.message);
-            throw new Error(profileData.message || 'Failed to fetch valid profile data.');
-        }
-
-    } catch (error) {
-        console.error('Error in getUserData:', error);
-        // Re-throw the error to be caught by initDashboard
-        throw error; 
-    }
-}
-
-// Use fetched user data
-function updateUserProfile(userData) {
-    const welcomeText = document.querySelector('.welcome-section h2');
-    const userNameSpan = document.querySelector('.user-profile .username'); // Update the span in top-bar
-
-    // Use firstName if available, otherwise fallback to registrationNumber
-=======
         return profileData;
     } catch (error) {
         console.error('Error in getUserData:', error);
@@ -158,25 +93,10 @@ function updateUserProfile(userData) {
     const welcomeText = document.querySelector('.welcome-section h2');
     const userNameSpan = document.querySelector('.user-profile .username');
 
->>>>>>> 403b044 (Updated files, removed unused HTML/CSS/JS, added src and logs directories)
     const displayName = userData.firstName || userData.registrationNumber || 'Student';
     
     if(welcomeText) {
         welcomeText.textContent = `Welcome back, ${displayName}!`;
-<<<<<<< HEAD
-    } else {
-        console.warn('Welcome text element not found.');
-    }
-    if(userNameSpan) {
-        userNameSpan.textContent = displayName;
-    } else {
-        console.warn('Username span element not found.');
-    }
-    // We can add more profile details here if needed
-    // e.g., display class name: 
-    // const classElement = document.getElementById('studentClass'); // Assuming an element with this ID exists
-    // if(classElement && userData.className) classElement.textContent = userData.className;
-=======
     }
     if(userNameSpan) {
         userNameSpan.textContent = displayName;
@@ -250,7 +170,6 @@ function debounce(func, wait) {
         clearTimeout(timeout);
         timeout = setTimeout(later, wait);
     };
->>>>>>> 403b044 (Updated files, removed unused HTML/CSS/JS, added src and logs directories)
 }
 
 // --- Remove or Comment Out Mock Data Functions and Updaters ---
