@@ -240,6 +240,9 @@ async function startServer() {
     try {
         // Create pool with database specified
         pool = mysql.createPool(dbConfig);
+        
+        // Make pool available to routes
+        app.locals.pool = pool;
 
         // Test database connection
         const connection = await pool.getConnection();
@@ -291,100 +294,6 @@ startServer();
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
 
 // API Routes
-
-// Login endpoint
-app.post('/api/auth/login', async (req, res) => {
-    try {
-        const { username, password, role } = req.body;
-        console.log('Login attempt for username:', username, 'role:', role);
-
-        if (role === 'student') {
-            // Check students table
-            const [studentRows] = await pool.execute(
-                'SELECT * FROM students WHERE admissionNumber = ?',
-                [username]
-            );
-
-            if (studentRows.length === 0) {
-                console.log('Student not found:', username);
-                return res.status(401).json({ message: 'Invalid admission number' });
-            }
-
-            const student = studentRows[0];
-            // For students, we'll use their admission number as password initially
-            if (password !== student.admissionNumber) {
-                console.log('Invalid password for student:', username);
-                return res.status(401).json({ message: 'Invalid password' });
-            }
-
-            const token = jwt.sign(
-                { 
-                    id: student.id, 
-                    username: student.admissionNumber, 
-                    role: 'student',
-                    roleId: 3 // Student role ID
-                },
-                JWT_SECRET,
-                { expiresIn: '24h' }
-            );
-
-            return res.json({ 
-                token, 
-                user: { 
-                    id: student.id, 
-                    username: student.admissionNumber, 
-                    role: 'student',
-                    roleId: 3,
-                    firstName: student.firstName,
-                    lastName: student.lastName,
-                    class: student.class_id,
-                    stream: student.stream_id
-                } 
-            });
-        }
-
-        // Admin login logic
-        if (role === 'admin') {
-            const [adminRows] = await pool.execute(
-                'SELECT * FROM admin_users WHERE username = ?',
-                [username]
-            );
-
-            if (adminRows.length > 0) {
-                const admin = adminRows[0];
-                const validPassword = await bcrypt.compare(password, admin.password);
-                
-                if (validPassword) {
-                    const token = jwt.sign(
-                        { 
-                            id: admin.id, 
-                            username: admin.username, 
-                            role: 'admin',
-                            roleId: 1 // Admin role ID
-                        },
-                        JWT_SECRET,
-                        { expiresIn: '24h' }
-                    );
-                    return res.json({ 
-                        token, 
-                        user: { 
-                            id: admin.id, 
-                            username: admin.username, 
-                            role: 'admin',
-                            roleId: 1
-                        } 
-                    });
-                }
-            }
-        }
-
-        // If not found or invalid credentials
-        return res.status(401).json({ message: 'Invalid credentials' });
-    } catch (error) {
-        console.error('Login error:', error);
-        res.status(500).json({ message: 'Server error during login' });
-    }
-});
 
 // Get Statistics
 app.get('/api/stats', authenticateToken, async (req, res) => {
@@ -1418,6 +1327,92 @@ app.get('/api/students/:admissionNumber/activity', authenticateToken, async (req
         res.status(500).json({
             success: false,
             message: 'Error fetching student activity'
+        });
+    }
+});
+
+// Get student profile information
+app.get('/api/profile/student', authenticateToken, async (req, res) => {
+    try {
+        const username = req.user.username; // This is the admission number
+
+        // Get student details with class and stream information
+        const [studentRows] = await pool.execute(`
+            SELECT s.*, c.name as class_name, st.name as stream_name
+            FROM students s
+            LEFT JOIN classes c ON s.class_id = c.id
+            LEFT JOIN streams st ON s.stream_id = st.id
+            WHERE s.admissionNumber = ?
+        `, [username]);
+
+        if (studentRows.length === 0) {
+            return res.status(404).json({
+                success: false,
+                message: 'Student not found'
+            });
+        }
+
+        const student = studentRows[0];
+
+        // Get attendance statistics
+        const [attendanceStats] = await pool.execute(`
+            SELECT 
+                COUNT(*) as total_days,
+                SUM(CASE WHEN status = 'present' THEN 1 ELSE 0 END) as present_days
+            FROM attendance 
+            WHERE student_id = ? AND date >= DATE_SUB(CURDATE(), INTERVAL 30 DAY)
+        `, [student.id]);
+
+        // Get pending assignments
+        const [assignments] = await pool.execute(`
+            SELECT COUNT(*) as pending_count
+            FROM assignments a
+            LEFT JOIN assignment_submissions s ON a.id = s.assignment_id AND s.student_id = ?
+            WHERE a.due_date >= CURDATE() AND s.id IS NULL
+        `, [student.id]);
+
+        // Get borrowed books
+        const [books] = await pool.execute(`
+            SELECT COUNT(*) as borrowed_count
+            FROM library_loans
+            WHERE student_id = ? AND return_date IS NULL
+        `, [student.id]);
+
+        // Format the response
+        const response = {
+            success: true,
+            data: {
+                student: {
+                    admissionNumber: student.admissionNumber,
+                    firstName: student.firstName,
+                    lastName: student.lastName,
+                    dateOfBirth: student.dateOfBirth,
+                    gender: student.gender,
+                    class: student.class_name,
+                    stream: student.stream_name,
+                    parentName: student.parentName,
+                    parentPhone: student.parentPhone,
+                    parentEmail: student.parentEmail,
+                    address: student.address,
+                    previousSchool: student.previousSchool,
+                    lastGrade: student.lastGrade
+                },
+                stats: {
+                    attendanceRate: attendanceStats[0].total_days > 0 
+                        ? Math.round((attendanceStats[0].present_days / attendanceStats[0].total_days) * 100) 
+                        : 0,
+                    pendingAssignments: assignments[0].pending_count,
+                    booksBorrowed: books[0].borrowed_count
+                }
+            }
+        };
+
+        res.json(response);
+    } catch (error) {
+        console.error('Error fetching student profile:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error fetching student profile'
         });
     }
 });
