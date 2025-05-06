@@ -17,11 +17,23 @@ async function initDashboard() {
 
     try {
         // Get user data from API
-        const userData = await getUserData(token);
-        updateUserProfile(userData);
+        const response = await fetch('/api/profile/student', {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
 
-        // Get student statistics
-        const stats = await getStudentStats(user.username);
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        if (!data.success) {
+            throw new Error(data.message || 'Failed to fetch student data');
+        }
+
+        const { student, stats } = data.data;
+        updateStudentProfile(student);
         updateDashboardStats(stats);
 
         // Initialize event listeners
@@ -39,68 +51,33 @@ async function initDashboard() {
     }
 }
 
-// Fetch user data from API
-async function getUserData(token) {
-    console.log('Fetching student profile data...');
-    try {
-        const response = await fetch('/api/profile/student', {
-            headers: {
-                'Authorization': `Bearer ${token}`
-            }
-        });
-
-        if (!response.ok) {
-            if (response.status === 401 || response.status === 403) {
-                console.error('Unauthorized or Forbidden fetching profile. Redirecting...');
-                localStorage.removeItem('token');
-                localStorage.removeItem('user');
-                window.location.href = '/login.html';
-                throw new Error('Redirecting due to auth error.');
-            }
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        
-        const profileData = await response.json();
-        return profileData;
-    } catch (error) {
-        console.error('Error in getUserData:', error);
-        throw error;
-    }
-}
-
-// Fetch student statistics
-async function getStudentStats(admissionNumber) {
-    try {
-        const response = await fetch(`/api/students/${admissionNumber}/stats`, {
-            headers: {
-                'Authorization': `Bearer ${localStorage.getItem('token')}`
-            }
-        });
-
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-
-        return await response.json();
-    } catch (error) {
-        console.error('Error fetching student stats:', error);
-        throw error;
-    }
-}
-
-// Update user profile information
-function updateUserProfile(userData) {
+// Update student profile information
+function updateStudentProfile(student) {
+    // Update welcome message and username
     const welcomeText = document.querySelector('.welcome-section h2');
     const userNameSpan = document.querySelector('.user-profile .username');
-
-    const displayName = userData.firstName || userData.registrationNumber || 'Student';
+    const fullName = `${student.firstName} ${student.lastName}`;
     
     if(welcomeText) {
-        welcomeText.textContent = `Welcome back, ${displayName}!`;
+        welcomeText.textContent = `Welcome back, ${student.firstName}!`;
     }
     if(userNameSpan) {
-        userNameSpan.textContent = displayName;
+        userNameSpan.textContent = fullName;
     }
+
+    // Update student information card
+    document.getElementById('studentName').textContent = fullName;
+    document.getElementById('admissionNumber').textContent = student.admissionNumber;
+    document.getElementById('studentClass').textContent = student.class;
+    document.getElementById('studentStream').textContent = student.stream;
+    document.getElementById('studentGender').textContent = student.gender;
+    document.getElementById('studentDOB').textContent = new Date(student.dateOfBirth).toLocaleDateString();
+    document.getElementById('parentName').textContent = student.parentName;
+    document.getElementById('parentPhone').textContent = student.parentPhone;
+    document.getElementById('parentEmail').textContent = student.parentEmail;
+    document.getElementById('studentAddress').textContent = student.address;
+    document.getElementById('previousSchool').textContent = student.previousSchool;
+    document.getElementById('lastGrade').textContent = student.lastGrade;
 }
 
 // Update dashboard statistics
@@ -111,12 +88,13 @@ function updateDashboardStats(stats) {
         attendanceElement.textContent = `${stats.attendanceRate}%`;
     }
 
-    // Update other stats if needed
+    // Update pending assignments
     const assignmentsElement = document.querySelector('[data-stat="assignments"]');
     if (assignmentsElement) {
         assignmentsElement.textContent = stats.pendingAssignments || '0';
     }
 
+    // Update borrowed books
     const booksElement = document.querySelector('[data-stat="books"]');
     if (booksElement) {
         booksElement.textContent = stats.booksBorrowed || '0';
@@ -285,7 +263,7 @@ async function fetchStudentProfile() {
         // Update dashboard with profile data (e.g., full name)
         if (profileData.success && profileData.data) {
              console.log('Updating profile info with:', profileData.data);
-             updateUserProfile(profileData.data); // Call the update function
+             updateStudentProfile(profileData.data); // Call the update function
              // Update other elements as needed
         }
 
