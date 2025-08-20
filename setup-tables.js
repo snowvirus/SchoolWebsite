@@ -2,16 +2,32 @@ require('dotenv').config();
 const mysql = require('mysql2/promise');
 
 async function setupTables() {
-    const connection = await mysql.createConnection({
+    const dbConfig = {
         host: process.env.DB_HOST,
         user: process.env.DB_USER,
         password: process.env.DB_PASSWORD,
         database: process.env.DB_NAME
-    });
+    };
+
+    let connection;
 
     try {
-        // Create circulars table
-        await connection.execute(`
+        // Connect to DB
+        connection = await mysql.createConnection(dbConfig);
+        console.log('✅ Connected to database');
+
+        // Helper to create a table
+        const createTable = async (query, name) => {
+            try {
+                await connection.execute(query);
+                console.log(`✅ Table "${name}" created/verified`);
+            } catch (err) {
+                console.error(`❌ Failed creating "${name}" table:`, err.message);
+            }
+        };
+
+        // Circulars table
+        await createTable(`
             CREATE TABLE IF NOT EXISTS circulars (
                 id INT AUTO_INCREMENT PRIMARY KEY,
                 title VARCHAR(255) NOT NULL,
@@ -19,13 +35,13 @@ async function setupTables() {
                 file_path VARCHAR(255) NOT NULL,
                 uploaded_by INT NOT NULL,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                FOREIGN KEY (uploaded_by) REFERENCES admin_users(id)
+                FOREIGN KEY (uploaded_by) REFERENCES admin_users(id) ON DELETE CASCADE,
+                INDEX idx_uploaded_by (uploaded_by)
             )
-        `);
-        console.log('Circulars table created/verified successfully');
+        `, "circulars");
 
-        // Create calendar_events table
-        await connection.execute(`
+        // Calendar events table
+        await createTable(`
             CREATE TABLE IF NOT EXISTS calendar_events (
                 id INT AUTO_INCREMENT PRIMARY KEY,
                 title VARCHAR(255) NOT NULL,
@@ -33,17 +49,20 @@ async function setupTables() {
                 date DATE NOT NULL,
                 created_by INT NOT NULL,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                FOREIGN KEY (created_by) REFERENCES admin_users(id)
+                FOREIGN KEY (created_by) REFERENCES admin_users(id) ON DELETE CASCADE,
+                INDEX idx_created_by (created_by),
+                INDEX idx_event_date (date)
             )
-        `);
-        console.log('Calendar events table created/verified successfully');
+        `, "calendar_events");
 
     } catch (error) {
-        console.error('Error setting up tables:', error);
+        console.error('❌ Database setup failed:', error.message);
     } finally {
-        await connection.end();
-        console.log('Database connection closed');
+        if (connection) {
+            await connection.end();
+            console.log('🔒 Database connection closed');
+        }
     }
 }
 
-setupTables(); 
+setupTables();
