@@ -56,7 +56,7 @@ src/
 
 3. **Database Setup**
    ```bash
-   # Start MySQL server
+   # Start MySQL server if it's the one u used
    sudo service mysql start
 
    # Create database and tables
