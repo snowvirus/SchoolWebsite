@@ -56,7 +56,7 @@ src/
 
 3. **Database Setup**
    ```bash
-   # Start MySQL server if it's the one u used
+   # Start MySQL server
    sudo service mysql start
 
    # Create database and tables
@@ -66,7 +66,7 @@ src/
 4. **Running the Application**
    ```bash
    # Start the server
-   npm start
+   npm start or nom run dev
 
    # The application will be available at
    http://localhost:3001
