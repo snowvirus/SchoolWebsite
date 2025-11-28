@@ -69,7 +69,7 @@ src/
    npm start or nom run dev
 
    # The application will be available at
-   http://localhost:3001
+   http://localhost:3001/0/2
    ```
 
 ## Access Points
